@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="409dp"
+        android:layout_height="729dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chess Leaderboard 0.1"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/txtPseudo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pseudo:" />
+
+        <EditText
+            android:id="@+id/editTextPseudo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
+            tools:text="Veuillez entrer votre pseudo..." />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mot de passe:" />
+
+        <EditText
+            android:id="@+id/editPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword"
+            tools:text="12345" />
+
+        <TextView
+            android:id="@+id/txtViewClefPublique"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Clef Publique:" />
+
+        <EditText
+            android:id="@+id/editTextClefPublique"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:editable="false"
+            android:ems="10"
+            android:inputType="textPersonName"
+            tools:text="Sera généré lorsque vous allez ajouter le pseudo" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Clef Privée" />
+
+        <EditText
+            android:id="@+id/editTextClefPrivee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:editable="false"
+            android:ems="10"
+            android:inputType="textPersonName"
+            tools:text="Sera généré lorsque vous allez ajouter le pseudo" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ajouter Pseudo" />
+
+        <Button
+            android:id="@+id/btnSupprimerDb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Supprimer Database" />
+
+        <ListView
+            android:id="@+id/listview1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
