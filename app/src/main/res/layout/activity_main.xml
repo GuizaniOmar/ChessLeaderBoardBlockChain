@@ -7,11 +7,14 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:layout_width="409dp"
-        android:layout_height="729dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="446dp"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView"
@@ -30,9 +33,9 @@
             android:id="@+id/editTextPseudo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
             android:ems="10"
             android:inputType="textPersonName"
-            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
             tools:text="Veuillez entrer votre pseudo..." />
 
         <TextView
@@ -49,47 +52,19 @@
             android:inputType="textPassword"
             tools:text="12345" />
 
-        <TextView
-            android:id="@+id/txtViewClefPublique"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Clef Publique:" />
-
-        <EditText
-            android:id="@+id/editTextClefPublique"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:editable="false"
-            android:ems="10"
-            android:inputType="textPersonName"
-            tools:text="Sera généré lorsque vous allez ajouter le pseudo" />
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Clef Privée" />
-
-        <EditText
-            android:id="@+id/editTextClefPrivee"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:editable="false"
-            android:ems="10"
-            android:inputType="textPersonName"
-            tools:text="Sera généré lorsque vous allez ajouter le pseudo" />
-
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ajouter Pseudo" />
+            android:text="Ajouter votre Pseudo au réseau" />
 
-        <Button
-            android:id="@+id/btnSupprimerDb"
+        <TextView
+            android:id="@+id/textViewListePseudos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Supprimer Database" />
+            android:text="Liste des pseudos dispo dans la table Pseudo/Clef (Rentrez votre mot de passe + cliquer sur un pseudo pour tenter de décrypter la clef privée et vous connecter)"
+            android:textColor="#212225"
+            android:textSize="15sp" />
 
         <ListView
             android:id="@+id/listview1"

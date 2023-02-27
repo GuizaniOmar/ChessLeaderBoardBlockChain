@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity2">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="409dp"
@@ -14,22 +13,23 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/txtTitre2"
+            android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="..." />
+            android:text="Arbitre:" />
 
-        <TextView
-            android:id="@+id/txtTitre2petit"
+        <EditText
+            android:id="@+id/editTextDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="..."
-            android:textSize="16sp" />
+            android:ems="10"
+            android:inputType="date" />
 
-        <Button
-            android:id="@+id/btnAjouterPartie"
+        <MultiAutoCompleteTextView
+            android:id="@+id/multiAutoCompleteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ajouter Partie (Arbitre)" />
+            android:text="MultiAutoCompleteTextView" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

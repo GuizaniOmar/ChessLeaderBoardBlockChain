@@ -19,6 +19,10 @@ public class MainActivity2 extends AppCompatActivity {
         txtTitre2petit = findViewById(R.id.txtTitre2petit);
         Intent x = getIntent();
         txtTitre2.setText("Tu es désormais connecté ! Bienvenue " + x.getStringExtra("id"));
-txtTitre2petit.setText(x.getStringExtra("ClefPrivee"))  ;
+        if (x.getStringExtra("ClefPrivee").length() > 10) {
+
+        }else{
+            txtTitre2petit.setText("Tu n'as pas de clé privée, tu ne peux pas jouer de parties privées");
+        }
     }
 }
