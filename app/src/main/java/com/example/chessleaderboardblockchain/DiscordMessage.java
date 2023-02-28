@@ -14,8 +14,9 @@ public class DiscordMessage {
 
             public void run() {
                 try {
-                    URL url = new URL("https://discord.com/api/webhooks/1078864077507534878/h0jTevT0U9TwcqsQkjYfSYvda0F3MI9hiXzU8YbL-VMWlupNWugZD_6qk2AXvQin57gW");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                 // Pour les personnes qui scannent les github à la recherche d'un Token disc.or.d
+                    URL url = new URL(CryptageClef.decrypt("M1a8q44V6i+RmaPvcQgcAWDXTFuHl5D6M2YwS5ly6TxgqADD2lrqNRBt9gkAS98vITM098B+ToDq7Z4Ve+boKn70Z7pVo5qjE/Y3rSl37h4qQ/9WOLGhcRCe2LDLeUFIDaXNuvO1EBE+cjKqiTFK+cMGqu9+3WshE3pfAw0T+Lg=","123"));
+                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json");
                     conn.setDoOutput(true);

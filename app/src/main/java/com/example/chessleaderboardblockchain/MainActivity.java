@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         DatabaseHelper maBaseDeDonnees = DatabaseHelper.getInstance(MainActivity.this);
         textView = (TextView) findViewById(R.id.textView);
         editPassword = (EditText) findViewById(R.id.editPassword);
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         listview1 = (ListView) findViewById(R.id.listview1);
         editTextPseudo = (EditText) findViewById(R.id.editTextPseudo);
 
-        DiscordMessage.EnvoieMessage("ROLANDO EST LE \\n MEILLEUR JOUEUR DU MONDE");
+        DiscordMessage.EnvoieMessage("Un client \\nse connecte à l'application");
 
         // On test de récupèrer le socket du serveur
 
@@ -142,9 +143,11 @@ public class MainActivity extends AppCompatActivity {
                         // début de l'actualisation du pseudo
                      ThreadClient.login(maBaseDeDonnees,editTextPseudo.getText().toString(),ClefPublique,ClefPriveeCryptee);
                      System.out.println("Actualisation");
+                     ThreadClient.actualiseBaseDeDonnees(maBaseDeDonnees);
                      new Handler().postDelayed(new Runnable() {
                          @Override
                          public void run() {
+
                              database = maBaseDeDonnees.getDatabase();
                              Cursor c = database.rawQuery("SELECT * FROM COMPTES",null);
 
@@ -152,9 +155,9 @@ public class MainActivity extends AppCompatActivity {
                              int [] to = {R.id.affichagePseudo,R.id.affichageClefPublique,R.id.affichageClefPrivee};
                              adapter2 = new SimpleCursorAdapter(MainActivity.this,R.layout.element,c,from,to,0);
                              listview1.setAdapter(adapter2);
-
+                            System.out.println("Actualisation2");
                          }
-                     }, 5000);
+                     }, 10000);
 
                  }catch(Exception e){
                      Toast.makeText(MainActivity.this, "Erreur lors de l'ajout ! ", Toast.LENGTH_LONG).show();
