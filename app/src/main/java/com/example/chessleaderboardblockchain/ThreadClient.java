@@ -45,7 +45,10 @@ public class ThreadClient {
                 Client client = null;
                 try {
                     client = new Client("93.115.97.128", 52000);
+                   // client = new Client("localhost", 52000);
+
                     client.login(madb, username, clefPublique, clefPriveeCryptee);
+                    client.close();
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -56,6 +59,42 @@ public class ThreadClient {
         return "Base de données reçues";
     }
 
+    public static String envoyerPartie(String timestampPartie, String hashPartie,String ClefPubliqueJ1, String ClefPubliqueJ2, String ClefPubliqueArbitre){
+            System.out.println("Envoyons la partie ! ");
+
+        final  String timestampPartie_final = timestampPartie;
+        final String hashPartie_final = hashPartie;
+        final String ClefPubliqueJ1_final = ClefPubliqueJ1;
+        final String ClefPubliqueJ2_final = ClefPubliqueJ2;
+        final String ClefPubliqueArbitre_final = ClefPubliqueArbitre;
+
+
+
+        new Thread(new Runnable() {
+            String timestampPartie = timestampPartie_final;
+            String hashPartie = hashPartie_final;
+            String ClefPubliqueJ1 = ClefPubliqueJ1_final;
+            String ClefPubliqueJ2 = ClefPubliqueJ2_final;
+            @Override
+
+            public void run() {
+
+                Client client = null;
+                try {
+                    client = new Client("93.115.97.128", 52000);
+                    // client = new Client("localhost", 52000);
+
+                    client.envoyerPartie(timestampPartie, hashPartie, ClefPubliqueJ1, ClefPubliqueJ2, ClefPubliqueArbitre);
+                    client.close();
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }).start();
+            return "Coucou";
+    }
     public static void main(String[] args) {
 
         }

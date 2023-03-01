@@ -64,18 +64,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Heure du match : " />
+            android:text="Date - Heure du match : " />
 
-        <EditText
+        <TextView
             android:id="@+id/editTextTime"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ems="10"
-            android:inputType="time" />
+            android:text="01/01/2022 00:00"
+            android:textSize="19sp" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btnEnvoyerPartie"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

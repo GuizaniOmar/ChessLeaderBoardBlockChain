@@ -85,5 +85,28 @@ public class Client  {
         String response = inputStream.readUTF();
         System.out.println("Réponse du serveur pour la suppression: " + response);
     }
+
+    public void close() throws IOException {
+        socket.close();
+    }
+
+    public void envoyerPartie(String timestampPartie, String hashPartie, String clefPubliqueJ1, String clefPubliqueJ2, String clefPubliqueArbitre) throws IOException{
+        String msg = "Message vide";
+        PaquetEnvoyerPartie paquet = new PaquetEnvoyerPartie(timestampPartie,hashPartie,clefPubliqueJ1,clefPubliqueJ2,clefPubliqueArbitre);
+        outputStream.writeInt(PaquetEnvoyerPartie.SEND_GAME);
+        outputStream.writeUTF(paquet.getTimestampPartie());
+        outputStream.writeUTF(paquet.getHashPartie());
+        outputStream.writeUTF(paquet.getClefPubliqueJ1());
+        outputStream.writeUTF(paquet.getClefPubliqueJ2());
+        outputStream.writeUTF(paquet.getClefPubliqueArbitre());
+        outputStream.flush();
+        int idresponse = inputStream.readInt();
+        for (int cd = 0; cd < 2; cd++){
+            System.out.println("On test de recevoir");
+            String response = inputStream.readUTF();
+            System.out.println("Réponse du serveur pour l'envoi de la partie: " + response);
+        }
+
+    }
 }
 

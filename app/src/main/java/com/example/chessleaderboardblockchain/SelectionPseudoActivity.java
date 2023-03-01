@@ -35,7 +35,12 @@ public class SelectionPseudoActivity extends AppCompatActivity {
         System.out.println(x.getStringExtra("id"));
         System.out.println(x.getStringExtra("ClefPrivee"));
         System.out.println(x.getStringExtra("ClefPublique"));
-
+        System.out.println(x.getStringExtra("Time"));
+        String time  = "";
+        if( x.getStringExtra("Time") != null){
+            System.out.println("Le time n'est pas null : " + x.getStringExtra("Time"));
+            time = (x.getStringExtra("Time"));
+        }
 
         String[] listeNomParticipants = {"","",""};
         if (x.getStringArrayExtra("listeParticipants") != null){
@@ -68,6 +73,7 @@ public class SelectionPseudoActivity extends AppCompatActivity {
         });
 
         String[] finalListeNomParticipants = listeNomParticipants;
+        String finalTime = time;
         btnSelectionPseudo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,7 +87,7 @@ public class SelectionPseudoActivity extends AppCompatActivity {
                     newintent.putExtra("ClefPrivee", x.getStringExtra("ClefPrivee"));
                     newintent.putExtra("ClefPublique", x.getStringExtra("ClefPublique"));
                     newintent.putExtra("listeParticipants", finalListeNomParticipants);
-
+                    newintent.putExtra("Time", finalTime);
                     startActivity(newintent);
                 } else{
                     Toast.makeText(SelectionPseudoActivity.this, "Veuillez selectionner un pseudo ! ", Toast.LENGTH_SHORT).show();

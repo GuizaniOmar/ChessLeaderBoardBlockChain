@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                              listview1.setAdapter(adapter2);
                             System.out.println("Actualisation2");
                          }
-                     }, 10000);
+                     }, 3000);
 
                  }catch(Exception e){
                      Toast.makeText(MainActivity.this, "Erreur lors de l'ajout ! ", Toast.LENGTH_LONG).show();
