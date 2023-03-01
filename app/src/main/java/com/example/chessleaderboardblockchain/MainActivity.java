@@ -25,10 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
     EditText editTextPseudo;
     ListView listview1;
-    SQLiteOpenHelper helper;
+
     SQLiteDatabase database;
-    EditText editTextClefPublique;
-    EditText editTextClefPrivee;
+
     EditText editPassword;
     Button btnLogin;
     Button btnSupprimerDb;
@@ -78,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
 
                   }
                   autreFenetre.putExtra("id", d.getString(1).toString());
+                  autreFenetre.putExtra("ClefPublique", d.getString(2).toString());
+
                   autreFenetre.putExtra("ClefPrivee", ClefDecryptee);
 
                   startActivity(autreFenetre);
@@ -157,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                              listview1.setAdapter(adapter2);
                             System.out.println("Actualisation2");
                          }
-                     }, 3000);
+                     }, 2000);
 
                  }catch(Exception e){
                      Toast.makeText(MainActivity.this, "Erreur lors de l'ajout ! ", Toast.LENGTH_LONG).show();

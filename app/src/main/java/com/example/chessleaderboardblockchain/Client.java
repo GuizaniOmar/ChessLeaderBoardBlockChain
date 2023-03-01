@@ -77,15 +77,56 @@ public class Client  {
         }
         return response;
     }
-    public void deleteAccount(String username) throws IOException {
-        PaquetDeleteAccount paquet = new PaquetDeleteAccount(username);
-        outputStream.writeInt(paquet.getType());
-        outputStream.writeUTF(paquet.getUsername());
-        outputStream.flush();
-        String response = inputStream.readUTF();
-        System.out.println("Réponse du serveur pour la suppression: " + response);
-    }
 
+    public String recupererPartiesASigner(DatabaseHelper db) throws IOException {
+        String msg = "Message vide";
+        PaquetPartiesASigner paquetx = new PaquetPartiesASigner(msg);
+
+        outputStream.writeInt(paquetx.getType());
+        System.out.println("Type du paquet : " + paquetx.getType());
+        outputStream.writeUTF(paquetx.getMsg());
+        outputStream.flush();
+        int idresponse = inputStream.readInt();
+        String response = inputStream.readUTF();
+        System.out.println("Reponse serveur parties à signer" + response);
+        List<String> list = Json.extraireMots(response);
+        int c;
+        SQLiteDatabase database = db.getDatabase();
+    //    database.execSQL("DROP TABLE IF EXISTS PARTIES");
+        for (c = 0;c<list.size();c++){
+            //     System.out.println("Element " + c + " : " + list.get(c));
+            // On tente d'ajouter l'élement dans une base de données !
+            Map<String, Object> obj = (Map<String, Object>) Json.deserialize(list.get(c));
+            String TimestampPartie = (String) obj.get("Timestamp");
+            String HashPartie = (String) obj.get("HashPartie");
+            String ClefPubliqueJ1 = (String) obj.get("ClefPubliqueJ1");
+            String ClefPubliqueJ2 = (String) obj.get("ClefPubliqueJ2");
+            String ClefPubliqueArbitre = (String) obj.get("ClefPubliqueArbitre");
+            String VoteJ1 = (String) obj.get("VoteJ1");
+            String VoteJ2 = (String) obj.get("VoteJ2");
+            String VoteArbitre = (String) obj.get("VoteArbitre");
+
+            if ((TimestampPartie != null) && (HashPartie != null) && (ClefPubliqueJ1 != null) && (ClefPubliqueJ2 != null) && (ClefPubliqueArbitre != null)) {
+                // ON VA RAJOUTER A LA BASE DE DONNEES
+                //MaBaseDeDonnees maBaseDeDonnees = MaBaseDeDonnees.getInstance(this);
+
+
+                try{
+                    database.execSQL("INSERT INTO PARTIES (Timestamp,HashPartie,ClefPubliqueJ1,ClefPubliqueJ2,ClefPubliqueArbitre,VoteJ1,VoteJ2,VoteArbitre) VALUES('" + TimestampPartie + "','"+ HashPartie + "','" + ClefPubliqueJ1 + "','" + ClefPubliqueJ2 + "','" + ClefPubliqueArbitre + "','" + VoteJ1 + "','" + VoteJ2 + "','" + VoteArbitre + "')");
+                }
+                catch (Exception e){
+                    System.out.println("BUG de base de données!");
+                }
+
+
+                System.out.println("TimestampPartie: " + TimestampPartie + " HashPartie: " + HashPartie + " ClefPubliqueJ1: " + ClefPubliqueJ1 + " ClefPubliqueJ2: " + ClefPubliqueJ2 + " ClefPubliqueArbitre: " + ClefPubliqueArbitre + " VoteJ1: " + VoteJ1 + " VoteJ2: " + VoteJ2 + " VoteArbitre: " + VoteArbitre);
+            }else {
+                System.out.println("ERREUR ! " + "TimestampPartie: " + TimestampPartie + " HashPartie: " + HashPartie + " ClefPubliqueJ1: " + ClefPubliqueJ1 + " ClefPubliqueJ2: " + ClefPubliqueJ2 + " ClefPubliqueArbitre: " + ClefPubliqueArbitre + " VoteJ1: " + VoteJ1 + " VoteJ2: " + VoteJ2 + " VoteArbitre: " + VoteArbitre);
+                  }
+            // CODE POUR RAJOUTER A LA BASE DE DONNEES...
+        }
+        return response;
+    }
     public void close() throws IOException {
         socket.close();
     }

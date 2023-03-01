@@ -95,6 +95,30 @@ public class ThreadClient {
         }).start();
             return "Coucou";
     }
+
+    public static String recevoirListeParties(DatabaseHelper db) {
+        final  DatabaseHelper madb = db;
+        new Thread(new Runnable() {
+            DatabaseHelper dbfinale = madb;
+            @Override
+
+            public void run() {
+
+                Client client = null;
+                try {
+                    client = new Client("93.115.97.128", 52000);
+                    client.recupererPartiesASigner(dbfinale);
+                    client.close(); // A la fin ça serra peut-être des clients connectés jusqu'à la fin?
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }).start();
+        return "Base de données reçues";
+    }
+
     public static void main(String[] args) {
 
         }

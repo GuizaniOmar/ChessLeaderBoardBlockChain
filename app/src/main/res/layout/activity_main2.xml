@@ -31,5 +31,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ajouter Partie (Arbitre)" />
+
+        <Button
+            android:id="@+id/btnAfficherParties"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Voir Partie à signer" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

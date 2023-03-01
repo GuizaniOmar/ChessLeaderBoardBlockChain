@@ -22,11 +22,15 @@ public class DatabaseHelper {
             public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
                 sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'COMPTES' ( '_id' INTEGER NOT NULL PRIMARY KEY UNIQUE, Pseudo TEXT NOT NULL UNIQUE, ClefPublique TEXT NOT NULL, ClefPrivee TEXT)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'PARTIES' ( '_id' INTEGER NOT NULL PRIMARY KEY UNIQUE, Timestamp TEXT NOT NULL , HashPartie TEXT NOT NULL, ClefPubliqueJ1 TEXT NOT NULL, ClefPubliqueJ2 TEXT NOT NULL, ClefPubliqueArbitre TEXT NOT NULL CHECK (ClefPubliqueJ1 <> ClefPubliqueJ2 AND ClefPubliqueJ1 <> ClefPubliqueArbitre AND ClefPubliqueJ2 <> ClefPubliqueArbitre), VoteJ1 TEXT, VoteJ2 TEXT, VoteArbitre TEXT )");
+
             }
 
             @Override
             public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
                 sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'COMPTES'");
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'PARTIES'");
+
                 onCreate(sqLiteDatabase);
             }
         };
