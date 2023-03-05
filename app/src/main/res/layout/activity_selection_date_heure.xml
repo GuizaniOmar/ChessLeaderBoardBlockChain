@@ -7,7 +7,7 @@
     android:accessibilityLiveRegion="polite"
     android:background="#D3D4D5"
     tools:actionBarNavMode="standard"
-    tools:context=".SelectionDateHeureActivity">
+    tools:context="com.mcgatletico.chessleaderboardblockchain.SelectionDateHeureActivity">
 
     <LinearLayout
         android:layout_width="409dp"

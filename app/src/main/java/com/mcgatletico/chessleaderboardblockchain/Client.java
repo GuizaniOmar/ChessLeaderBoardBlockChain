@@ -1,4 +1,4 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 
 import android.database.sqlite.SQLiteDatabase;
@@ -7,7 +7,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

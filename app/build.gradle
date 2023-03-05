@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    namespace 'com.example.chessleaderboardblockchain'
+    namespace 'com.mcgatletico.chessleaderboardblockchain'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.chessleaderboardblockchain"
-        minSdk 24
+        applicationId "com.mcgatletico.chessleaderboardblockchain"
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"

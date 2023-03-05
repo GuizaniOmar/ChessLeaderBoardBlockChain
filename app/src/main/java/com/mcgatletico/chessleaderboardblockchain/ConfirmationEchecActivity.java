@@ -1,8 +1,10 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.mcgatletico.chessleaderboardblockchain.R;
 
 public class ConfirmationEchecActivity extends AppCompatActivity {
 

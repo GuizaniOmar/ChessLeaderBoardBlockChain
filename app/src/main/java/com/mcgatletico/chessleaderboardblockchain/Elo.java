@@ -1,4 +1,4 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 import java.util.HashMap;
 import java.util.List;

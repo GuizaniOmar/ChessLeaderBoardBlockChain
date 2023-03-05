@@ -1,4 +1,4 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 import java.security.MessageDigest;
 public class SHA2 {
     public static String encrypt(String message) {

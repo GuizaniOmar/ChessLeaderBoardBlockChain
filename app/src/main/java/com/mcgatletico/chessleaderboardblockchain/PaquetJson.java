@@ -1,7 +1,4 @@
-package com.example.chessleaderboardblockchain;
-
-import java.io.IOException;
-import java.util.Map;
+package com.mcgatletico.chessleaderboardblockchain;
 
 class PaquetJson extends Paquet {
     private String msg;

@@ -1,4 +1,4 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 import java.text.DateFormat;
 import java.text.ParseException;

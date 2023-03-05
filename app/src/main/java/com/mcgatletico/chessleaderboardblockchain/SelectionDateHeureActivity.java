@@ -1,4 +1,4 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,9 +10,7 @@ import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import com.mcgatletico.chessleaderboardblockchain.R;
 
 public class SelectionDateHeureActivity extends AppCompatActivity {
     CalendarView calendarView;

@@ -1,4 +1,4 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 public class PaquetEnvoyerPartie extends Paquet {
     private String ClefPubliqueJ1;

@@ -1,4 +1,4 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;

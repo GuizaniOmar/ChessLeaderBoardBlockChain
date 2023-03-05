@@ -1,13 +1,10 @@
-package com.example.chessleaderboardblockchain;
-
-import java.io.IOException;
-import java.util.Map;
+package com.mcgatletico.chessleaderboardblockchain;
 
 class PaquetPartiesASigner extends Paquet {
     private String msg;
 
     public PaquetPartiesASigner(String msg) {
-        super(Paquet.PAQUETPartiesASIGNER);
+        super(PAQUETPartiesASIGNER);
         this.msg = msg;
     }
 

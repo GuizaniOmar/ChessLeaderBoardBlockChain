@@ -1,13 +1,11 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import java.io.File;
-import java.sql.DriverManager;
+
 public class DatabaseHelper {
     private static DatabaseHelper instance;
     private SQLiteOpenHelper helper;

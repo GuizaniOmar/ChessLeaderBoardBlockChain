@@ -1,11 +1,10 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -18,7 +17,9 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
+import com.mcgatletico.chessleaderboardblockchain.R;
+
+import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
     TextView textView;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         DatabaseHelper maBaseDeDonnees = DatabaseHelper.getInstance(MainActivity.this);
         textView = (TextView) findViewById(R.id.textView);
@@ -170,4 +173,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
 }

@@ -1,4 +1,4 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +15,8 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mcgatletico.chessleaderboardblockchain.R;
 
 public class SelectionPseudoActivity extends AppCompatActivity {
     SimpleCursorAdapter adapter2;

@@ -1,9 +1,12 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 public class ThreadClient {
-
+        //private static String IP_Serveur = "93.115.97.128";
+    //91.178.73.121
+    private static String IP_Serveur = "192.168.1.17";
 
         public static String actualiseBaseDeDonnees(DatabaseHelper db) {
             final  DatabaseHelper madb = db;
@@ -12,10 +15,15 @@ public class ThreadClient {
                 @Override
 
                 public void run() {
-
+                    try {
+                        test.liste_ips();
+                    } catch (UnknownHostException e) {
+                        throw new RuntimeException(e);
+                    }
                         Client client = null;
                         try {
-                            client = new Client("93.115.97.128", 52000);
+                            client = new Client(IP_Serveur, 52000);
+                         //   Server server = new Server(52000);
                             client.json(dbfinale);
 
                         } catch (IOException e) {
@@ -44,7 +52,7 @@ public class ThreadClient {
 
                 Client client = null;
                 try {
-                    client = new Client("93.115.97.128", 52000);
+                    client = new Client(IP_Serveur, 52000);
                    // client = new Client("localhost", 52000);
 
                     client.login(madb, username, clefPublique, clefPriveeCryptee);
@@ -81,7 +89,7 @@ public class ThreadClient {
 
                 Client client = null;
                 try {
-                    client = new Client("93.115.97.128", 52000);
+                    client = new Client(IP_Serveur, 52000);
                     // client = new Client("localhost", 52000);
 
                     client.envoyerPartie(timestampPartie, hashPartie, ClefPubliqueJ1, ClefPubliqueJ2, ClefPubliqueArbitre);
@@ -106,7 +114,7 @@ public class ThreadClient {
 
                 Client client = null;
                 try {
-                    client = new Client("93.115.97.128", 52000);
+                    client = new Client(IP_Serveur, 52000);
                     client.recupererPartiesASigner(dbfinale);
                     client.close(); // A la fin ça serra peut-être des clients connectés jusqu'à la fin?
 

@@ -1,4 +1,4 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 public class PaquetLogin extends Paquet{
     private String username;
@@ -6,7 +6,7 @@ public class PaquetLogin extends Paquet{
     private String clefPublique;
     private String clefPriveeCryptee;
     public PaquetLogin(String username, String clefPublique, String clefPriveeCryptee) {
-        super(Paquet.LOGIN);
+        super(LOGIN);
         this.username = username;
 
         this.clefPriveeCryptee = clefPriveeCryptee;

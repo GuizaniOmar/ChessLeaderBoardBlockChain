@@ -1,4 +1,4 @@
-package com.example.chessleaderboardblockchain;
+package com.mcgatletico.chessleaderboardblockchain;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,9 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mcgatletico.chessleaderboardblockchain.R;
 
 public class AjouterPartieActivity extends AppCompatActivity {
 TextView editTextJoueur1;
