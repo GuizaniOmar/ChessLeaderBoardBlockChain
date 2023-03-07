@@ -10,7 +10,9 @@ import java.security.spec.X509EncodedKeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 public class RSA {
 
+    private static final String ALGORITHM_CIPHER = "RSA/ECB/PKCS1Padding";
     private static final String ALGORITHM = "RSA";
+
     private static KeyPairGenerator keyGen;
     private static KeyPair pair;
     public static PrivateKey privateKey;
@@ -43,7 +45,7 @@ public class RSA {
 
     }
     public static String encode(String message, PrivateKey key) throws Exception {
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        Cipher cipher = Cipher.getInstance(ALGORITHM_CIPHER);
         cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] encoded = cipher.doFinal(message.getBytes());
         return Base64.getEncoder().encodeToString(encoded);
@@ -51,7 +53,7 @@ public class RSA {
 
     public static String decode(String message, PublicKey key) throws Exception {
         byte[] decoded = Base64.getDecoder().decode(message);
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        Cipher cipher = Cipher.getInstance(ALGORITHM_CIPHER);
         cipher.init(Cipher.DECRYPT_MODE, key);
         byte[] decrypted = cipher.doFinal(decoded);
         return new String(decrypted);

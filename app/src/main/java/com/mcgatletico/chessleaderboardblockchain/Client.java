@@ -148,5 +148,26 @@ public class Client  {
         }
 
     }
+//
+    public void ajouterSignature(String hashPartie,String acteurPartie,String signaturePartie) throws IOException{
+        String msg = "Message vide";
+        PaquetAjouterSignature paquet = new PaquetAjouterSignature(hashPartie,acteurPartie,signaturePartie);
+        outputStream.writeInt(PaquetEnvoyerPartie.SIGNATURE);
+
+        outputStream.writeUTF(paquet.getHashPartie());
+        outputStream.writeUTF(paquet.getVoteActeur());
+        outputStream.writeUTF(paquet.getSignature());
+
+        outputStream.flush();
+        int idresponse = inputStream.readInt();
+        for (int cd = 0; cd < 1; cd++){
+            System.out.println("On test de recevoir la confirmation de signature");
+            String response = inputStream.readUTF();
+            System.out.println("Réponse du serveur pour la signature: " + response);
+        }
+
+    }
+
+
 }
 

@@ -80,6 +80,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Ajouter au réseau" />
+
+        <Button
+            android:id="@+id/btnRetourAjouterPartie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Retour" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

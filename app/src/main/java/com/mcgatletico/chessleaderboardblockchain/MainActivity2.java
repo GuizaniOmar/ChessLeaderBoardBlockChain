@@ -15,11 +15,13 @@ public class MainActivity2 extends AppCompatActivity {
     TextView txtTitre2petit;
     Button btnAjouterPartie;
     Button btnAfficherParties;
+    Button btnRetourMain;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         btnAjouterPartie = findViewById(R.id.btnAjouterPartie);
+        btnRetourMain = findViewById(R.id.btnRetourMain);
         btnAfficherParties = findViewById(R.id.btnAfficherParties);
         txtTitre2 = findViewById(R.id.txtTitre2);
         txtTitre2petit = findViewById(R.id.txtTitre2petit);
@@ -34,7 +36,13 @@ public class MainActivity2 extends AppCompatActivity {
                 intent.putExtra("ClefPublique", x.getStringExtra("ClefPublique"));
                 startActivity(intent);
             });
-
+            btnRetourMain.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity2.this, MainActivity.class);
+                    startActivity(intent);
+                }
+            });
             btnAfficherParties.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

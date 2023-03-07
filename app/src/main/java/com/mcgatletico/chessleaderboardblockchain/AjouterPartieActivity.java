@@ -19,6 +19,7 @@ TextView editTextJoueur1;
     TextView editTextJoueur2;
     TextView editTextTime;
     Button btnEnvoyerPartie;
+    Button btnRetourAjouterPartie;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +27,7 @@ TextView editTextJoueur1;
         editTextJoueur1 = findViewById(R.id.editTextJoueur1);
         editTextArbitre = findViewById(R.id.editTextArbitre);
         editTextJoueur2 = findViewById(R.id.editTextJoueur2);
+        btnRetourAjouterPartie = findViewById(R.id.btnRetourAjouterPartie);
         editTextTime = findViewById(R.id.editTextTime);
         Button btnEnvoyerPartie = findViewById(R.id.btnEnvoyerPartie);
         Intent x = getIntent();
@@ -52,7 +54,16 @@ TextView editTextJoueur1;
 
 
         String[] finalListeNomParticipants = listeNomParticipants;
-
+        btnRetourAjouterPartie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent newintent = new Intent(AjouterPartieActivity.this,MainActivity2.class);
+                newintent.putExtra("id", x.getStringExtra("id"));
+                newintent.putExtra("ClefPrivee", x.getStringExtra("ClefPrivee"));
+                newintent.putExtra("ClefPublique", x.getStringExtra("ClefPublique"));
+                startActivity(newintent);
+            }
+        });
         btnEnvoyerPartie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

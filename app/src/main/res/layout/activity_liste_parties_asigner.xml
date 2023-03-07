@@ -49,6 +49,12 @@
                 android:layout_height="wrap_content"
                 android:text="Actualiser" />
 
+            <Button
+                android:id="@+id/btnRetourListePartiesASigner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Retour" />
+
             <ListView
                 android:id="@+id/listViewListePartiesASigner"
                 android:layout_width="match_parent"

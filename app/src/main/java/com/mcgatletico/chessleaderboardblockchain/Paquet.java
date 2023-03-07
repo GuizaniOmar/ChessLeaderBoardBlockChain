@@ -8,6 +8,7 @@ class Paquet {
 //llll
     public static final int SEND_GAME = 3;
     public static final int JSON = 4;
+    public static final int SIGNATURE = 5;
     public Paquet(int type) {
         this.type = type;
     }

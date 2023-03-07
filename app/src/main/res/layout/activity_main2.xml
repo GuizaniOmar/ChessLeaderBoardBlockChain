@@ -37,5 +37,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Voir Partie à signer" />
+
+        <Button
+            android:id="@+id/btnRetourMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Retour" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

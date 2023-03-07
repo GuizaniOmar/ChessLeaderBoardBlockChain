@@ -133,10 +133,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                             if (pseudoExiste == false) {
+                                Toast.makeText(MainActivity.this, "Pseudo inexistant, création d'un nouveau compte ! ", Toast.LENGTH_LONG).show();
                                 // On génère une clef publique et une clef privée
                                 RSA rsa = new RSA();
                                 ClefPublique = rsa.publicKeyToString();
                                 ClefPriveeCryptee = rsa.privateKeyToString();
+                                Toast.makeText(MainActivity.this, "Clef publique : " + ClefPublique, Toast.LENGTH_LONG).show();
 
 
                                 ClefPriveeCryptee = CryptageClef.encrypt(ClefPriveeCryptee, editPassword.getText().toString());

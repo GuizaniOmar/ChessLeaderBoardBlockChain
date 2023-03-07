@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.mcgatletico.chessleaderboardblockchain.R;
 
@@ -21,11 +22,14 @@ public class ListePartiesASignerActivity extends AppCompatActivity {
     Button btnActualiserListePartiesASigner;
     ListView listViewListePartiesASigner;
     RadioButton radioButtonTout;
+
+    Button btnRetourListePartiesASigner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_liste_parties_asigner);
         radioButtonTout = findViewById(R.id.radioButtonTout);
+        btnRetourListePartiesASigner = findViewById(R.id.btnRetourListePartiesASigner);
         listViewListePartiesASigner = findViewById(R.id.listViewListePartiesASigner);
         btnActualiserListePartiesASigner= findViewById(R.id.btnActualiserListePartiesASigner);
         Intent x = getIntent();
@@ -33,7 +37,16 @@ public class ListePartiesASignerActivity extends AppCompatActivity {
         String ClefPrivee = x.getStringExtra("ClefPrivee");
         String ClefPublique = x.getStringExtra("ClefPublique");
 
-
+btnRetourListePartiesASigner.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        Intent newintent = new Intent(ListePartiesASignerActivity.this,MainActivity2.class);
+        newintent.putExtra("id",id);
+        newintent.putExtra("ClefPrivee",ClefPrivee);
+        newintent.putExtra("ClefPublique",ClefPublique);
+        startActivity(newintent);
+    }
+});
         btnActualiserListePartiesASigner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,7 +88,7 @@ public class ListePartiesASignerActivity extends AppCompatActivity {
                             listViewListePartiesASigner.setAdapter(adapter2);
 
                         }
-                    }, 4000);
+                    }, 3000);
 
                 }catch(Exception e){}
 

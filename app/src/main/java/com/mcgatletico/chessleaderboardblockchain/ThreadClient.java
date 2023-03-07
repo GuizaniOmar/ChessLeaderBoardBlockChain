@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 public class ThreadClient {
         //private static String IP_Serveur = "93.115.97.128";
     //91.178.73.121
-    private static String IP_Serveur = "192.168.1.17";
+    private static String IP_Serveur = "192.168.1.57";
 
         public static String actualiseBaseDeDonnees(DatabaseHelper db) {
             final  DatabaseHelper madb = db;
@@ -35,6 +35,7 @@ public class ThreadClient {
             return "Base de données reçues";
         }
     public static String login(DatabaseHelper db, String username, String clefPublique, String clefPriveeCryptee) {
+
         final  DatabaseHelper madb = db;
         final  String username_final = username;
         final  String clefPublique_final = clefPublique;
@@ -125,6 +126,42 @@ public class ThreadClient {
             }
         }).start();
         return "Base de données reçues";
+    }
+
+
+    public static String envoyerSignature(String hashPartie,String acteurPartie, String signaturePartie){
+        System.out.println("Envoyons la signature ! ");
+
+        final  String hashPartie_final = hashPartie;
+        final String acteurPartie_final = acteurPartie;
+        final String signaturePartie_final = signaturePartie;
+
+
+
+        new Thread(new Runnable() {
+            String hashPartie = hashPartie_final;
+            String acteurPartie = acteurPartie_final;
+            String signaturePartie = signaturePartie_final;
+
+            @Override
+
+            public void run() {
+
+                Client client = null;
+                try {
+                    client = new Client(IP_Serveur, 52000);
+                    // client = new Client("localhost", 52000);
+
+                    client.ajouterSignature(hashPartie, acteurPartie, signaturePartie);
+                    client.close();
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }).start();
+        return "Coucou";
     }
 
     public static void main(String[] args) {
