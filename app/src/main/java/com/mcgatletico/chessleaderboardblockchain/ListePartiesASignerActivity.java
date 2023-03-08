@@ -55,7 +55,7 @@ btnRetourListePartiesASigner.setOnClickListener(new View.OnClickListener() {
 
 
                 database.execSQL("DROP TABLE IF EXISTS 'PARTIES'");
-                database.execSQL("CREATE TABLE IF NOT EXISTS 'PARTIES' ( '_id' INTEGER NOT NULL PRIMARY KEY UNIQUE, Timestamp TEXT NOT NULL , HashPartie TEXT NOT NULL, ClefPubliqueJ1 TEXT NOT NULL, ClefPubliqueJ2 TEXT NOT NULL, ClefPubliqueArbitre TEXT NOT NULL CHECK (ClefPubliqueJ1 <> ClefPubliqueJ2 AND ClefPubliqueJ1 <> ClefPubliqueArbitre AND ClefPubliqueJ2 <> ClefPubliqueArbitre), VoteJ1 TEXT, VoteJ2 TEXT, VoteArbitre TEXT )");
+                database.execSQL("CREATE TABLE IF NOT EXISTS 'PARTIES' ( '_id' INTEGER NOT NULL PRIMARY KEY UNIQUE, Timestamp TEXT NOT NULL , HashPartie TEXT NOT NULL, ClefPubliqueJ1 TEXT NOT NULL, ClefPubliqueJ2 TEXT NOT NULL, ClefPubliqueArbitre TEXT NOT NULL CHECK (ClefPubliqueJ1 <> ClefPubliqueJ2 AND ClefPubliqueJ1 <> ClefPubliqueArbitre AND ClefPubliqueJ2 <> ClefPubliqueArbitre), VoteJ1 TEXT, VoteJ2 TEXT, VoteArbitre TEXT, SignatureJ1 TEXT,SignatureJ2 TEXT,SignatureArbitre TEXT )");
 
                 // On actualise ici !!!! Avec un thread avec le temps
                 System.out.println("On actualise la Bdd avec Liste Parties ");

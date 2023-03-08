@@ -20,6 +20,11 @@ import android.widget.Toast;
 import com.mcgatletico.chessleaderboardblockchain.R;
 
 import java.net.UnknownHostException;
+import java.security.Provider;
+import java.security.Security;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     TextView textView;
@@ -132,12 +137,21 @@ public class MainActivity extends AppCompatActivity {
                             }
 
 
-                            if (pseudoExiste == false) {
+                            if (!pseudoExiste) {
                                 Toast.makeText(MainActivity.this, "Pseudo inexistant, création d'un nouveau compte ! ", Toast.LENGTH_LONG).show();
                                 // On génère une clef publique et une clef privée
-                                RSA rsa = new RSA();
-                                ClefPublique = rsa.publicKeyToString();
-                                ClefPriveeCryptee = rsa.privateKeyToString();
+                               // System.out.println(Arrays.toString(new Set[]{Security.getAlgorithms("Signature")}));
+                               // System.out.println("gROS GROS GROS");
+
+                                RSAPSS rsapss = new RSAPSS();
+                                Toast.makeText(MainActivity.this, "Encodage de message : " + RSAPSS.encode("Salut",RSAPSS.privateKey), Toast.LENGTH_LONG).show();
+                                ClefPublique = RSAPSS.publicKeyToString();
+
+                                System.out.println("Clef publique : " + ClefPublique);
+
+                                System.out.println("Encodage " + RSAPSS.encode("Salut",RSAPSS.privateKey));
+                               System.out.println("Decodage réussie ? " + RSAPSS.decode("Salut",RSAPSS.encode("Salut",RSAPSS.privateKey),RSAPSS.publicKey));
+                                ClefPriveeCryptee = RSAPSS.privateKeyToString();
                                 Toast.makeText(MainActivity.this, "Clef publique : " + ClefPublique, Toast.LENGTH_LONG).show();
 
 

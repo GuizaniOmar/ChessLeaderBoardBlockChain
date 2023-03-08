@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 public class ThreadClient {
         //private static String IP_Serveur = "93.115.97.128";
     //91.178.73.121
-    private static String IP_Serveur = "192.168.1.57";
+    private static String IP_Serveur = "192.168.1.17";
 
         public static String actualiseBaseDeDonnees(DatabaseHelper db) {
             final  DatabaseHelper madb = db;
@@ -129,19 +129,20 @@ public class ThreadClient {
     }
 
 
-    public static String envoyerSignature(String hashPartie,String acteurPartie, String signaturePartie){
+    public static String envoyerSignature(String hashPartie,String acteurPartie, String Vote, String signaturePartie){
         System.out.println("Envoyons la signature ! ");
 
         final  String hashPartie_final = hashPartie;
         final String acteurPartie_final = acteurPartie;
         final String signaturePartie_final = signaturePartie;
-
+        final String Vote_final = Vote;
 
 
         new Thread(new Runnable() {
             String hashPartie = hashPartie_final;
             String acteurPartie = acteurPartie_final;
             String signaturePartie = signaturePartie_final;
+            String vote = Vote_final;
 
             @Override
 
@@ -152,7 +153,7 @@ public class ThreadClient {
                     client = new Client(IP_Serveur, 52000);
                     // client = new Client("localhost", 52000);
 
-                    client.ajouterSignature(hashPartie, acteurPartie, signaturePartie);
+                    client.ajouterSignature(hashPartie, acteurPartie,vote, signaturePartie);
                     client.close();
 
                 } catch (IOException e) {

@@ -6,13 +6,15 @@ public class PaquetAjouterSignature extends Paquet{
     private String hashPartie;
 
     private String acteurSignature;
+    private String vote;
     private String signature;
     private String voteActeur;
     public static String[] voteActeurs =  {"VoteJ1", "VoteJ2", "VoteArbitre"};
     public static String[] clefActeurs =  {"ClefPubliqueJ1", "ClefPubliqueJ2", "ClefPubliqueArbitre"};
-    public PaquetAjouterSignature(String hashPartie, String voteActeur, String signature) {
+    public PaquetAjouterSignature(String hashPartie, String voteActeur,String vote, String signature) {
         super(Paquet.SIGNATURE);
         this.hashPartie = hashPartie;
+        this.vote = vote;
         if (Arrays.asList(voteActeurs).contains(voteActeur)) // on autorise uniquement les votes de J1, J2 et Arbitre
             this.voteActeur = voteActeur;
         else
@@ -43,6 +45,10 @@ public class PaquetAjouterSignature extends Paquet{
 
     public String getVoteActeur() {
         return voteActeur;
+    }
+
+    public String getVote() {
+        return vote;
     }
 }
 

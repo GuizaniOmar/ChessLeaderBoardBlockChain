@@ -104,6 +104,9 @@ public class Client  {
             String VoteJ1 = (String) obj.get("VoteJ1");
             String VoteJ2 = (String) obj.get("VoteJ2");
             String VoteArbitre = (String) obj.get("VoteArbitre");
+            String SignatureJ1 = (String) obj.get("SignatureJ1");
+            String SignatureJ2 = (String) obj.get("SignatureJ2");
+            String SignatureArbitre = (String) obj.get("SignatureArbitre");
 
             if ((TimestampPartie != null) && (HashPartie != null) && (ClefPubliqueJ1 != null) && (ClefPubliqueJ2 != null) && (ClefPubliqueArbitre != null)) {
                 // ON VA RAJOUTER A LA BASE DE DONNEES
@@ -111,14 +114,14 @@ public class Client  {
 
 
                 try{
-                    database.execSQL("INSERT INTO PARTIES (Timestamp,HashPartie,ClefPubliqueJ1,ClefPubliqueJ2,ClefPubliqueArbitre,VoteJ1,VoteJ2,VoteArbitre) VALUES('" + TimestampPartie + "','"+ HashPartie + "','" + ClefPubliqueJ1 + "','" + ClefPubliqueJ2 + "','" + ClefPubliqueArbitre + "','" + VoteJ1 + "','" + VoteJ2 + "','" + VoteArbitre + "')");
+                    database.execSQL("INSERT INTO PARTIES (Timestamp,HashPartie,ClefPubliqueJ1,ClefPubliqueJ2,ClefPubliqueArbitre,VoteJ1,VoteJ2,VoteArbitre,SignatureJ1,SignatureJ2,SignatureArbitre) VALUES('" + TimestampPartie + "','"+ HashPartie + "','" + ClefPubliqueJ1 + "','" + ClefPubliqueJ2 + "','" + ClefPubliqueArbitre + "','" + VoteJ1 + "','" + VoteJ2 + "','" + VoteArbitre + "','" + SignatureJ1 + "','" + SignatureJ2 + "','" + SignatureArbitre +"')");
                 }
                 catch (Exception e){
                     System.out.println("BUG de base de données!");
                 }
 
 
-                System.out.println("TimestampPartie: " + TimestampPartie + " HashPartie: " + HashPartie + " ClefPubliqueJ1: " + ClefPubliqueJ1 + " ClefPubliqueJ2: " + ClefPubliqueJ2 + " ClefPubliqueArbitre: " + ClefPubliqueArbitre + " VoteJ1: " + VoteJ1 + " VoteJ2: " + VoteJ2 + " VoteArbitre: " + VoteArbitre);
+                System.out.println("TimestampPartie xD: " + TimestampPartie + " HashPartie: " + HashPartie + " ClefPubliqueJ1: " + ClefPubliqueJ1 + " ClefPubliqueJ2: " + ClefPubliqueJ2 + " ClefPubliqueArbitre: " + ClefPubliqueArbitre + " VoteJ1: " + VoteJ1 + " VoteJ2: " + VoteJ2 + " VoteArbitre: " + VoteArbitre);
             }else {
                 System.out.println("ERREUR ! " + "TimestampPartie: " + TimestampPartie + " HashPartie: " + HashPartie + " ClefPubliqueJ1: " + ClefPubliqueJ1 + " ClefPubliqueJ2: " + ClefPubliqueJ2 + " ClefPubliqueArbitre: " + ClefPubliqueArbitre + " VoteJ1: " + VoteJ1 + " VoteJ2: " + VoteJ2 + " VoteArbitre: " + VoteArbitre);
                   }
@@ -149,13 +152,15 @@ public class Client  {
 
     }
 //
-    public void ajouterSignature(String hashPartie,String acteurPartie,String signaturePartie) throws IOException{
+    public void ajouterSignature(String hashPartie,String acteurPartie,String vote, String signaturePartie) throws IOException{
         String msg = "Message vide";
-        PaquetAjouterSignature paquet = new PaquetAjouterSignature(hashPartie,acteurPartie,signaturePartie);
+        PaquetAjouterSignature paquet = new PaquetAjouterSignature(hashPartie,acteurPartie,vote,signaturePartie);
         outputStream.writeInt(PaquetEnvoyerPartie.SIGNATURE);
 
         outputStream.writeUTF(paquet.getHashPartie());
         outputStream.writeUTF(paquet.getVoteActeur());
+        outputStream.writeUTF(paquet.getVote());
+
         outputStream.writeUTF(paquet.getSignature());
 
         outputStream.flush();

@@ -62,7 +62,7 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                     String contenueFiltreSql = "WHERE HashPartie = '" + hashPartie + "'";
 
                     //Cursor c = database.rawQuery("SELECT * FROM PARTIES" + contenueFiltreSql,null);
-                    Cursor c = database.rawQuery("SELECT PARTIES._id,PARTIES.ClefPubliqueJ1,PARTIES.ClefPubliqueJ2,PARTIES.ClefPubliqueArbitre, PARTIES.VoteJ1,PARTIES.VoteJ2,PARTIES.VoteArbitre, strftime('%d-%m-%Y %H:%M', datetime(PARTIES.Timestamp/1000, 'unixepoch')) as dateDuMatch, PARTIES.HashPartie, \n" +
+                    Cursor c = database.rawQuery("SELECT PARTIES._id,PARTIES.ClefPubliqueJ1,PARTIES.ClefPubliqueJ2,PARTIES.ClefPubliqueArbitre, PARTIES.VoteJ1,PARTIES.VoteJ2,PARTIES.VoteArbitre,PARTIES.SignatureJ1,PARTIES.SignatureJ2,PARTIES.SignatureArbitre, strftime('%d-%m-%Y %H:%M', datetime(PARTIES.Timestamp/1000, 'unixepoch')) as dateDuMatch, PARTIES.HashPartie, \n" +
                             "COMPTES1.Pseudo AS Joueur1, " +
                             "COMPTES2.Pseudo AS Joueur2, " +
                             "COMPTES3.Pseudo AS Arbitre " +
@@ -84,7 +84,11 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                         String ClefPubliqueJ1 = c.getString(c.getColumnIndex("ClefPubliqueJ1"));
                         String ClefPubliqueJ2 = c.getString(c.getColumnIndex("ClefPubliqueJ2"));
                         String ClefPubliqueArbitre = c.getString(c.getColumnIndex("ClefPubliqueArbitre"));
-                       textTitreSignerPartie.setText("Signer la partie " + hashPartie + " du " + dateDuMatch);
+                       String signatureJ1 = c.getString(c.getColumnIndex("SignatureJ1"));
+                          String signatureJ2 = c.getString(c.getColumnIndex("SignatureJ2"));
+                            String signatureArbitre = c.getString(c.getColumnIndex("SignatureArbitre"));
+
+                        textTitreSignerPartie.setText("Signer la partie " + hashPartie + " du " + dateDuMatch);
                        textPseudoJ1Signature.setText(joueur1);
                        textPseudoJ2Signature.setText(joueur2);
                        textPseudoArbitreSignature.setText(arbitre);
@@ -105,11 +109,12 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                         textPseudoJ1Signature.setTextColor(Color.parseColor(Couleurs[0]));
                         // On essaie de déchiffrer le vote
                         try{
-                            String Resultat = RSA.decode(voteJ1, RSA.publicKeyFromString(ClefPubliqueJ1));
-                            String[] parties = Resultat.split("-");
+                            boolean signatureEstValide = RSAPSS.decode(voteJ1,signatureJ1, RSAPSS.publicKeyFromString(ClefPubliqueJ1));
+
+                            String[] parties = voteJ1.split("-");
                             String hashduVote = parties[0];
                             String Vote = parties[1];
-                            if (Vote.length() == 1)
+                            if (Vote.length() == 1 && signatureEstValide)
                                 textPseudoJ1Signature.setText(joueur1 + " a voté " + Vote);
                             else
                                 throw new Exception("Vote invalide");
@@ -124,12 +129,14 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                     if (!voteJ2.equals("")) {
                         textPseudoJ2Signature.setTextColor(Color.parseColor(Couleurs[0]));
                         try{
-                            String Resultat = RSA.decode(voteJ2, RSA.publicKeyFromString(ClefPubliqueJ2));
-                            String[] parties = Resultat.split("-");
+                            boolean signatureEstValide = RSAPSS.decode(voteJ2,signatureJ2, RSAPSS.publicKeyFromString(ClefPubliqueJ1));
+
+                            String[] parties = voteJ2.split("-");
                             String hashduVote = parties[0];
                             String Vote = parties[1];
-                            if (Vote.length() == 1)
+                            if (Vote.length() == 1 && signatureEstValide)
                                 textPseudoJ2Signature.setText(joueur2 + " a voté " + Vote);
+
                             else
                                 throw new Exception("Vote invalide");
 
@@ -144,12 +151,14 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                     if (!voteArbitre.equals("")) {
                         textPseudoArbitreSignature.setTextColor(Color.parseColor(Couleurs[0]));
                         try{
-                            String Resultat = RSA.decode(voteArbitre, RSA.publicKeyFromString(ClefPubliqueArbitre));
-                            String[] parties = Resultat.split("-");
+                            boolean signatureEstValide = RSAPSS.decode(voteArbitre,signatureArbitre, RSAPSS.publicKeyFromString(ClefPubliqueJ1));
+
+                            String[] parties = voteArbitre.split("-");
                             String hashduVote = parties[0];
                             String Vote = parties[1];
-                            if (Vote.length() == 1)
+                            if (Vote.length() == 1 && signatureEstValide)
                                 textPseudoArbitreSignature.setText(arbitre + " a voté " + Vote);
+
                             else
                                 throw new Exception("Vote invalide");
 
@@ -218,26 +227,25 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                     try {
                         String hashVote = hashPartie + "-" + voteLettre;
                         System.out.println("Hash du vote : " + hashVote);
-
-                        String voteChiffre = RSA.encode(hashVote, RSA.privateKeyFromString(clefPrivee));
+                        System.out.println("Clef Privée : " + clefPrivee);
+                        String signatureVote = RSAPSS.encode(hashVote, RSAPSS.privateKeyFromString(clefPrivee));
                         System.out.println("Clef Privée : " + clefPrivee);
                         // On va tenter de décder
                         System.out.println("Clef Publique: " + clefPublique);
-                        System.out.println("Message encodée: " + voteChiffre);
-                        String decoderMessage = "";
+                        System.out.println("Signature du message: " + signatureVote);
+
                         try{
 
-                            decoderMessage = RSA.decode(voteChiffre, RSA.publicKeyFromString(clefPublique));
-                            System.out.println("Message décodé : " + decoderMessage);
+                           boolean signatureEstValide = RSAPSS.decode(hashVote,signatureVote, RSAPSS.publicKeyFromString(clefPublique));
+                            System.out.println("Signature est-t-elle valide ? : " + signatureEstValide);
                         }
                         catch(Exception e){
-                            System.out.println("Erreur de décodage");
+                            System.out.println("Erreur lors de la vérification de la signature");
                         }
 
-                        ContentValues values = new ContentValues();
-                        values.put("Vote" + vote,voteChiffre);
+
                         System.out.println("On test de voter" + hashPartie);
-                        ThreadClient.envoyerSignature(hashPartie,"Vote" + vote ,voteChiffre);
+                        ThreadClient.envoyerSignature(hashPartie, vote ,hashVote, signatureVote);
                      //   database.update("PARTIES", values, "HashPartie='" + hashPartie + "'",null);
                         //On try de déchiffrer le vote
                         Toast.makeText(SignerPartieActivity.this, "Vote enregistré ! ", Toast.LENGTH_SHORT).show();
@@ -250,7 +258,7 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                         startActivity(intent);
                     }
                     catch(Exception e){
-                        Toast.makeText(SignerPartieActivity.this, "Erreur lors du vote ! ", Toast.LENGTH_SHORT).show() ;
+                        Toast.makeText(SignerPartieActivity.this, "Erreur lors du vote ! " + e.getMessage(), Toast.LENGTH_SHORT).show() ;
                     }
                 }
             }
