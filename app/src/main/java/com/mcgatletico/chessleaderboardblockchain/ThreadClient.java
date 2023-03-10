@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 public class ThreadClient {
         //private static String IP_Serveur = "93.115.97.128";
     //91.178.73.121
-    private static String IP_Serveur = "192.168.1.17";
+    private static String IP_Serveur = "192.168.1.57";
 
         public static String actualiseBaseDeDonnees(DatabaseHelper db) {
             final  DatabaseHelper madb = db;

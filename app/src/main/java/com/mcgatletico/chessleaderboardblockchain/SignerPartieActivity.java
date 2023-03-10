@@ -129,7 +129,7 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                     if (!voteJ2.equals("")) {
                         textPseudoJ2Signature.setTextColor(Color.parseColor(Couleurs[0]));
                         try{
-                            boolean signatureEstValide = RSAPSS.decode(voteJ2,signatureJ2, RSAPSS.publicKeyFromString(ClefPubliqueJ1));
+                            boolean signatureEstValide = RSAPSS.decode(voteJ2,signatureJ2, RSAPSS.publicKeyFromString(ClefPubliqueJ2));
 
                             String[] parties = voteJ2.split("-");
                             String hashduVote = parties[0];
@@ -151,7 +151,7 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                     if (!voteArbitre.equals("")) {
                         textPseudoArbitreSignature.setTextColor(Color.parseColor(Couleurs[0]));
                         try{
-                            boolean signatureEstValide = RSAPSS.decode(voteArbitre,signatureArbitre, RSAPSS.publicKeyFromString(ClefPubliqueJ1));
+                            boolean signatureEstValide = RSAPSS.decode(voteArbitre,signatureArbitre, RSAPSS.publicKeyFromString(ClefPubliqueArbitre));
 
                             String[] parties = voteArbitre.split("-");
                             String hashduVote = parties[0];

@@ -19,15 +19,23 @@ public class DatabaseHelper {
 
             public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'COMPTES' ( '_id' INTEGER NOT NULL PRIMARY KEY UNIQUE, Pseudo TEXT NOT NULL UNIQUE, ClefPublique TEXT NOT NULL, ClefPrivee TEXT)");
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'PARTIES' ( '_id' INTEGER NOT NULL PRIMARY KEY UNIQUE, Timestamp TEXT NOT NULL , HashPartie TEXT NOT NULL, ClefPubliqueJ1 TEXT NOT NULL, ClefPubliqueJ2 TEXT NOT NULL, ClefPubliqueArbitre TEXT NOT NULL CHECK (ClefPubliqueJ1 <> ClefPubliqueJ2 AND ClefPubliqueJ1 <> ClefPubliqueArbitre AND ClefPubliqueJ2 <> ClefPubliqueArbitre), VoteJ1 TEXT, VoteJ2 TEXT, VoteArbitre TEXT, SignatureJ1 TEXT, SignatureJ2 TEXT, SignatureArbitre TEXT )");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'compte' ( '_id' INTEGER NOT NULL PRIMARY KEY, Pseudo TEXT NOT NULL UNIQUE, ClefPublique TEXT NOT NULL, ClefPrivee TEXT)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'partieARecevoir' ('_id'INTEGER NOT NULL PRIMARY KEY,'timestamp' INTEGER NOT NULL,'hashPartie' TEXT NOT NULL,'clefPubliqueJ1' TEXT NOT NULL,'clefPubliqueJ2' TEXT NOT NULL,'clefPubliqueArbitre' TEXT NOT NULL CHECK('clefPubliqueJ1' <> 'clefPubliqueJ2' AND 'clefPubliqueJ1' <> 'clefPubliqueArbitre' AND 'clefPubliqueJ2' <> 'clefPubliqueArbitre'),'voteJ1' TEXT,'voteJ2' TEXT,'voteArbitre' TEXT,'signatureJ1' TEXT,'signatureJ2' TEXT,'signatureArbitre' TEXT)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'partieAEnvoyer' ('_id'INTEGER NOT NULL PRIMARY KEY,'timestamp' INTEGER NOT NULL,'hashPartie' TEXT NOT NULL,'clefPubliqueJ1' TEXT NOT NULL,'clefPubliqueJ2' TEXT NOT NULL,'clefPubliqueArbitre' TEXT NOT NULL CHECK('clefPubliqueJ1' <> 'clefPubliqueJ2' AND 'clefPubliqueJ1' <> 'clefPubliqueArbitre' AND 'clefPubliqueJ2' <> 'clefPubliqueArbitre'),'voteJ1' TEXT,'voteJ2' TEXT,'voteArbitre' TEXT,'signatureJ1' TEXT,'signatureJ2' TEXT,'signatureArbitre' TEXT)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'partie' ('_id'INTEGER NOT NULL PRIMARY KEY,'timestamp' INTEGER NOT NULL,'hashPartie' TEXT NOT NULL,'clefPubliqueJ1' TEXT NOT NULL,'clefPubliqueJ2' TEXT NOT NULL,'clefPubliqueArbitre' TEXT NOT NULL CHECK('clefPubliqueJ1' <> 'clefPubliqueJ2' AND 'clefPubliqueJ1' <> 'clefPubliqueArbitre' AND 'clefPubliqueJ2' <> 'clefPubliqueArbitre'),'voteJ1' TEXT,'voteJ2' TEXT,'voteArbitre' TEXT,'signatureJ1' TEXT,'signatureJ2' TEXT,'signatureArbitre' TEXT,'hashVote' TEXT)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'confirmation' ('_id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'hashPartie' TEXT NOT NULL,'hashVote' TEXT NOT NULL,'clefPublique' TEXT NOT NULL,'signatureHashVote' TEXT NOT NULL)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'plainte' ('_id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'hashPartie' TEXT NOT NULL,'hashVote' TEXT NOT NULL,'clefPublique' TEXT NOT NULL,'signatureHashVote' TEXT NOT NULL)");
 
             }
 
             @Override
             public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'COMPTES'");
-                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'PARTIES'");
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'compte'");
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'partieARecevoir'");
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'partieAEnvoyer'");
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'partie'");
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'confirmation'");
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'plainte'");
 
                 onCreate(sqLiteDatabase);
             }
