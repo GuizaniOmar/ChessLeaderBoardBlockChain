@@ -1,17 +1,21 @@
 package com.mcgatletico.chessleaderboardblockchain;
 
 
+import android.annotation.SuppressLint;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 public class Client  {
+    // Classe permettant de se connecter au serveur distant (en + du peer-peer)
     private Socket socket;
     private DataInputStream inputStream;
     private DataOutputStream outputStream;
@@ -37,7 +41,105 @@ public class Client  {
         System.out.println("Réponse du serveur pour la présence du pseudo dans la base de données : " + response2 );
 
     }
-    public String json(DatabaseHelper db) throws IOException {
+
+    @SuppressLint("Range")
+    public void sendComptes(DatabaseHelper db){
+
+        // Le serveur reçoit une liste de comptes, pour les ajouter à sa base de données
+        SQLiteDatabase database = db.getDatabase();
+        try {
+            outputStream.writeInt(6); //On envoie 6 pour dire que c'est un envoie de comptes
+            outputStream.flush();
+            Cursor result = database.rawQuery("SELECT _id,pseudo,clefPublique FROM compte",null);
+            String contenue = "";   // Contenue du paquet
+            try {
+                int i=0;
+                outputStream.writeUTF("start");
+                outputStream.flush();
+                while (result.moveToNext()) {
+
+                    Map<String, Object> map2 = new HashMap<>();
+
+                    map2.put("id", result.getInt(result.getColumnIndex("_id")));
+                    map2.put("pseudo", result.getString(result.getColumnIndex("pseudo")));;
+                    map2.put("clefPublique", result.getString(result.getColumnIndex("clefPublique")));
+                    System.out.println("i:"+i+ " " + Json.serialize(map2));
+                    if ((Json.serialize(map2).length() + contenue.length()) > 32000) // Si le paquet est + gros que la capacité maximale par envoie de paquet
+                    {
+                        outputStream.writeUTF(contenue);
+
+                        outputStream.flush();
+                        contenue = "";
+                    }
+                    contenue += "|" + Json.serialize(map2) + "|";
+
+                    i++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            System.out.println("Erreur PseudoClefs");
+        }
+
+
+    }
+
+    public void getComptes(DatabaseHelper db) throws IOException {
+        // Le serveur reçoit une liste de comptes, pour les ajouter à sa base de données
+        SQLiteDatabase database = db.getDatabase();
+        outputStream.writeInt(20);//20 = demande la liste de compte
+        outputStream.flush();
+        System.out.println("On a envoyé la demande de clé publique ! ");
+
+        String message = inputStream.readUTF();
+        if (message.equals("start")) {
+            String msg = inputStream.readUTF();
+            while (!msg.equals("end")) {
+                //JSON parser pour récuperer les clés publiques
+
+                List<String> list = Json.extraireMots(msg);
+                int c;
+                for (c = 0; c < list.size(); c++) {
+                    //     System.out.println("Element " + c + " : " + list.get(c));
+                    // On tente d'ajouter l'élement dans une base de données !
+                    Map<String, Object> obj = (Map<String, Object>) Json.deserialize(list.get(c));
+                    String pseudo = (String) obj.get("pseudo");
+                    // On récupère pas la clef privée String clefPriveeCryptee = (String) obj.get("clefPrivee");
+                    String clefPublique = (String) obj.get("clefPublique");
+
+                    if ((pseudo != null) && (clefPublique != null)) {
+                       ajouterCompte(db, pseudo, clefPublique);
+                        } else {
+                        System.out.println("ERREUR ! " + "pseudo: " + pseudo + " clefpublique: " + clefPublique);
+                    }
+                    // CODE POUR RAJOUTER A LA BASE DE DONNEES...
+                }
+
+                msg = inputStream.readUTF();
+
+            }
+            System.out.println("Serveur nous envoie : " + message);
+        }
+        System.out.println("Serveur nous envoie : " + message);
+
+    }
+
+    public void ajouterCompte(DatabaseHelper db,String pseudo, String clefPublique, String clefPrivee) {
+        SQLiteDatabase database = db.getDatabase();
+        String[] values = {pseudo, clefPublique, clefPrivee};
+        try {
+            database.execSQL("INSERT INTO compte ('pseudo','clefPublique','clefPrivee') VALUES ('"+values[0]+"', '"+values[1]+"', '"+values[2]+"')");
+        }catch(Exception e){
+            System.out.println("Erreur lors de l'ajout du compte dans leaderboard");
+        }
+
+    }
+
+    public void ajouterCompte(DatabaseHelper db, String pseudo, String clefPublique) {
+        ajouterCompte(db,pseudo, clefPublique, "");
+    }
+  public String json(DatabaseHelper db) throws IOException {
         String msg = "Message vide";
         PaquetJson paquet = new PaquetJson(msg);
         outputStream.writeInt(paquet.getType());
