@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -24,6 +25,14 @@ public class SelectionPseudoActivity extends AppCompatActivity {
     TextView textViewTitreSelectionPseudo;
     EditText editTextSelectionPseudo;
     Button btnSelectionPseudo;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            // Votre code ici. Laissez vide si vous ne voulez rien faire lors du retour en arrière.
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +99,7 @@ public class SelectionPseudoActivity extends AppCompatActivity {
                     newintent.putExtra("ClefPublique", x.getStringExtra("ClefPublique"));
                     newintent.putExtra("listeParticipants", finalListeNomParticipants);
                     newintent.putExtra("Time", finalTime);
+                    newintent.putExtra("serveur", x.getStringExtra("serveur"));
                     startActivity(newintent);
                 } else{
                     Toast.makeText(SelectionPseudoActivity.this, "Veuillez selectionner un pseudo ! ", Toast.LENGTH_SHORT).show();

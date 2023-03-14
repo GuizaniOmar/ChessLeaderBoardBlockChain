@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -18,6 +19,14 @@ public class SelectionDateHeureActivity extends AppCompatActivity {
     EditText editTextMinute;
     Button btnValiderDate;
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            // Votre code ici. Laissez vide si vous ne voulez rien faire lors du retour en arrière.
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selection_date_heure);
@@ -29,6 +38,7 @@ public class SelectionDateHeureActivity extends AppCompatActivity {
         System.out.println(x.getStringExtra("id"));
         System.out.println(x.getStringExtra("ClefPrivee"));
         System.out.println(x.getStringExtra("ClefPublique"));
+
         final String[] DateChoisie = {""};
 
         String[] listeNomParticipants = {"","",""};
@@ -62,6 +72,7 @@ public class SelectionDateHeureActivity extends AppCompatActivity {
                     newintent.putExtra("ClefPublique", x.getStringExtra("ClefPublique"));
                     newintent.putExtra("listeParticipants", finalListeNomParticipants);
                     newintent.putExtra("Time", time);
+                    newintent.putExtra("serveur", x.getStringExtra("serveur"));
                     startActivity(newintent);
 
                 }

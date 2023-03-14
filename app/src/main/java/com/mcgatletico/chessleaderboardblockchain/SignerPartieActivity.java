@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -32,6 +33,14 @@ Button btnRetourSignerPartie;
 Button btnVoter;
 String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            // Votre code ici. Laissez vide si vous ne voulez rien faire lors du retour en arrière.
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signer_partie);
@@ -51,6 +60,7 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
         String hashPartie = intent.getStringExtra("HashPartie");
         String clefPrivee = intent.getStringExtra("ClefPrivee");
         String clefPublique = intent.getStringExtra("ClefPublique");
+        String serveur = intent.getStringExtra("serveur");
         DatabaseHelper maBaseDeDonnees = DatabaseHelper.getInstance(SignerPartieActivity.this);
         SQLiteDatabase database = maBaseDeDonnees.getDatabase();
         try{
@@ -189,7 +199,7 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
 
                 intent.putExtra("ClefPrivee", clefPrivee);
                 intent.putExtra("ClefPublique", clefPublique);
-                intent.putExtra("serveur","serveur");
+                intent.putExtra("serveur",serveur);
                 startActivity(intent);
             }
         });
@@ -254,6 +264,7 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                         intent.putExtra("HashPartie", hashPartie);
                         intent.putExtra("ClefPrivee", clefPrivee);
                         intent.putExtra("ClefPublique", clefPublique);
+                        intent.putExtra("serveur",serveur);
 
 
                         startActivity(intent);

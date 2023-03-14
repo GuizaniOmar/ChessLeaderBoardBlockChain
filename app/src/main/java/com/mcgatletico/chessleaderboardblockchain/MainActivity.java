@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -41,6 +42,14 @@ public class MainActivity extends AppCompatActivity {
     Button btnLogin2;
     Switch switch1;
     SimpleCursorAdapter adapter2;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            // Votre code ici. Laissez vide si vous ne voulez rien faire lors du retour en arrière.
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
                   autreFenetre.putExtra("ClefPublique", d.getString(2).toString());
 
                   autreFenetre.putExtra("ClefPrivee", ClefDecryptee);
-                    autreFenetre.putExtra("serveur",Boolean.toString(switch1.isChecked()));
+                  String serveur = Boolean.toString(switch1.isChecked());
+                    autreFenetre.putExtra("serveur", serveur);
                   startActivity(autreFenetre);
               }
            }

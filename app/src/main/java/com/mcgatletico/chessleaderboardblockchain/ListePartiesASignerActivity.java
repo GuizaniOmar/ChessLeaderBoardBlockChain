@@ -45,6 +45,7 @@ btnRetourListePartiesASigner.setOnClickListener(new View.OnClickListener() {
         newintent.putExtra("id",id);
         newintent.putExtra("ClefPrivee",ClefPrivee);
         newintent.putExtra("ClefPublique",ClefPublique);
+        newintent.putExtra("serveur",serveur);
         startActivity(newintent);
     }
 });
