@@ -122,6 +122,13 @@
                 android:text="Voter" />
 
             <Button
+                android:id="@+id/btnSauvegarderPartie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="Sauvegarder Partie(3 votes seulement)" />
+
+            <Button
                 android:id="@+id/btnRetourSignerPartie"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

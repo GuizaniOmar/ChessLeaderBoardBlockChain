@@ -10,7 +10,7 @@ public class DatabaseHelper {
     private static DatabaseHelper instance;
     private SQLiteOpenHelper helper;
     private SQLiteDatabase database;
-    private String nomBaseDeDonnees = "dbchess.db";
+    private String nomBaseDeDonnees = "dbchess2.db";
     private DatabaseHelper(Context context) {
         System.out.println("#1 - Execution de la création de la base de données ! ");
         supprimerBaseDeDonnees(context);
@@ -19,13 +19,16 @@ public class DatabaseHelper {
 
             public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'compte' ( '_id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, Pseudo TEXT NOT NULL UNIQUE, ClefPublique TEXT NOT NULL, ClefPrivee TEXT)");
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'partieARecevoir' ('_id'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'timestamp' INTEGER NOT NULL,'hashPartie' TEXT NOT NULL,'clefPubliqueJ1' TEXT NOT NULL,'clefPubliqueJ2' TEXT NOT NULL,'clefPubliqueArbitre' TEXT NOT NULL CHECK('clefPubliqueJ1' <> 'clefPubliqueJ2' AND 'clefPubliqueJ1' <> 'clefPubliqueArbitre' AND 'clefPubliqueJ2' <> 'clefPubliqueArbitre'),'voteJ1' TEXT,'voteJ2' TEXT,'voteArbitre' TEXT,'signatureJ1' TEXT,'signatureJ2' TEXT,'signatureArbitre' TEXT)");
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'partieAEnvoyer' ('_id'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'timestamp' INTEGER NOT NULL,'hashPartie' TEXT NOT NULL,'clefPubliqueJ1' TEXT NOT NULL,'clefPubliqueJ2' TEXT NOT NULL,'clefPubliqueArbitre' TEXT NOT NULL CHECK('clefPubliqueJ1' <> 'clefPubliqueJ2' AND 'clefPubliqueJ1' <> 'clefPubliqueArbitre' AND 'clefPubliqueJ2' <> 'clefPubliqueArbitre'),'voteJ1' TEXT,'voteJ2' TEXT,'voteArbitre' TEXT,'signatureJ1' TEXT,'signatureJ2' TEXT,'signatureArbitre' TEXT)");
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'partie' ('_id'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'timestamp' INTEGER NOT NULL,'hashPartie' TEXT NOT NULL,'clefPubliqueJ1' TEXT NOT NULL,'clefPubliqueJ2' TEXT NOT NULL,'clefPubliqueArbitre' TEXT NOT NULL CHECK('clefPubliqueJ1' <> 'clefPubliqueJ2' AND 'clefPubliqueJ1' <> 'clefPubliqueArbitre' AND 'clefPubliqueJ2' <> 'clefPubliqueArbitre'),'voteJ1' TEXT,'voteJ2' TEXT,'voteArbitre' TEXT,'signatureJ1' TEXT,'signatureJ2' TEXT,'signatureArbitre' TEXT,'hashVote' TEXT)");
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'confirmation' ('_id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'hashPartie' TEXT NOT NULL,'hashVote' TEXT NOT NULL,'clefPublique' TEXT NOT NULL,'signatureHashVote' TEXT NOT NULL)");
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS 'plainte' ('_id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'hashPartie' TEXT NOT NULL,'hashVote' TEXT NOT NULL,'clefPublique' TEXT NOT NULL,'signatureHashVote' TEXT NOT NULL)");
-                sqLiteDatabase.execSQL("CREATE TABLE 'partieDetail' ('_id' INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,'hashPartie' TEXT NOT NULL,'resultat' TEXT NOT NULL,'eloJ1' INTEGER NOT NULL,'eloJ2' INTEGER NOT NULL,'fiabiliteArbitre' REAL CHECK (fiabiliteArbitre BETWEEN 0.0 AND 1.0), 'eloGainJ1' INTEGER, 'eloGainJ2' INTEGER, 'arbitreGain' REAL, 'satisfactionArbitrage' INTEGER)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS compte (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, pseudo TEXT NOT NULL, clefPublique TEXT NOT NULL UNIQUE, clefPrivee TEXT)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS partieARecevoir (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, timestamp INTEGER NOT NULL, hashPartie TEXT NOT NULL, clefPubliqueJ1 TEXT NOT NULL, clefPubliqueJ2 TEXT NOT NULL, clefPubliqueArbitre TEXT NOT NULL CHECK(clefPubliqueJ1 <> clefPubliqueJ2 AND clefPubliqueJ1 <> clefPubliqueArbitre AND clefPubliqueJ2 <> clefPubliqueArbitre), voteJ1 TEXT, voteJ2 TEXT, voteArbitre TEXT, signatureJ1 TEXT, signatureJ2 TEXT, signatureArbitre TEXT)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS partieAEnvoyer (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, timestamp INTEGER NOT NULL, hashPartie TEXT NOT NULL, clefPubliqueJ1 TEXT NOT NULL, clefPubliqueJ2 TEXT NOT NULL, clefPubliqueArbitre TEXT NOT NULL CHECK(clefPubliqueJ1 <> clefPubliqueJ2 AND clefPubliqueJ1 <> clefPubliqueArbitre AND clefPubliqueJ2 <> clefPubliqueArbitre), voteJ1 TEXT, voteJ2 TEXT, voteArbitre TEXT, signatureJ1 TEXT, signatureJ2 TEXT, signatureArbitre TEXT)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS partie (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, timestamp INTEGER NOT NULL, hashPartie TEXT NOT NULL, clefPubliqueJ1 TEXT NOT NULL, clefPubliqueJ2 TEXT NOT NULL, clefPubliqueArbitre TEXT NOT NULL CHECK(clefPubliqueJ1 <> clefPubliqueJ2 AND clefPubliqueJ1 <> clefPubliqueArbitre AND clefPubliqueJ2 <> clefPubliqueArbitre), voteJ1 TEXT, voteJ2 TEXT, voteArbitre TEXT, signatureJ1 TEXT, signatureJ2 TEXT, signatureArbitre TEXT, hashVote TEXT)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS confirmation (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, hashPartie TEXT NOT NULL, hashVote TEXT NOT NULL, clefPublique TEXT NOT NULL, signatureHashVote TEXT NOT NULL)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS plainte (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, hashPartie TEXT NOT NULL, hashVote TEXT NOT NULL, clefPublique TEXT NOT NULL, signatureHashVote TEXT NOT NULL)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS partieDetail (_id INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT, hashPartie TEXT NOT NULL, resultat TEXT NOT NULL, eloJ1 TEXT NOT NULL, eloJ2 TEXT NOT NULL, fiabiliteArbitre REAL CHECK (fiabiliteArbitre BETWEEN 0.0 AND 1.0))");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS leadeboard (_id INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT, clefPublique TEXT NOT NULL UNIQUE, pseudo TEXT NOT NULL, elo TEXT, coefficientArbitrage REAL, scoreTotal REAL, nbParties INTEGER, nbVictoire INTEGER, nbConfirmation INTEGER, nbPartieArbitre INTEGER, nbNul INTEGER, nbDefaite INTEGER)");
+
+
             }
 
             @Override
@@ -36,6 +39,9 @@ public class DatabaseHelper {
                 sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'partie'");
                 sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'confirmation'");
                 sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'plainte'");
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'partieDetail'");
+                sqLiteDatabase.execSQL("DROP TABLE IF EXISTS 'leadeboard'");
+
 
                 onCreate(sqLiteDatabase);
             }

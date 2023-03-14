@@ -39,6 +39,12 @@
             android:text="Voir Partie à signer" />
 
         <Button
+            android:id="@+id/btnVoirParties"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Voir les Parties" />
+
+        <Button
             android:id="@+id/btnRetourMain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

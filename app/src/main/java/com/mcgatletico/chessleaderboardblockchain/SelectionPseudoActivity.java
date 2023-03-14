@@ -57,9 +57,9 @@ public class SelectionPseudoActivity extends AppCompatActivity {
         String[] listeTitreParticipants = {"Arbitre","Joueur 1","Joueur 2"};
         textViewTitreSelectionPseudo.setText("Selectionnez le pseudo du "+ listeTitreParticipants[id_player]+" :");
        SQLiteDatabase database = maBaseDeDonnees.getDatabase();
-        Cursor c = database.rawQuery("SELECT * FROM COMPTES",null);
+        Cursor c = database.rawQuery("SELECT * FROM compte",null);
 
-        String [] from = {"Pseudo"};
+        String [] from = {"pseudo"};
         int [] to = {android.R.id.text1};
         adapter2 = new SimpleCursorAdapter(SelectionPseudoActivity.this,android.R.layout.simple_list_item_1,c,from,to,0);
         listViewSelectionPseudo.setAdapter(adapter2);

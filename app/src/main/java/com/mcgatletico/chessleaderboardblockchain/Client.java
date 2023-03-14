@@ -43,11 +43,12 @@ public class Client  {
     }
 
     @SuppressLint("Range")
-    public void sendComptes(DatabaseHelper db){
-
+    public void sendComptes(DatabaseHelper db)  {
+        System.out.println("Send comptes() en cours...");
         // Le serveur reçoit une liste de comptes, pour les ajouter à sa base de données
         SQLiteDatabase database = db.getDatabase();
         try {
+            System.out.println("Send comptes en cours...");
             outputStream.writeInt(6); //On envoie 6 pour dire que c'est un envoie de comptes
             outputStream.flush();
             Cursor result = database.rawQuery("SELECT _id,pseudo,clefPublique FROM compte",null);
@@ -57,14 +58,12 @@ public class Client  {
                 outputStream.writeUTF("start");
                 outputStream.flush();
                 while (result.moveToNext()) {
-
                     Map<String, Object> map2 = new HashMap<>();
-
+                    System.out.println("Envoie du compte " + i + " : " + result.getString(result.getColumnIndex("pseudo")) + " " + result.getString(result.getColumnIndex("clefPublique")));
                     map2.put("id", result.getInt(result.getColumnIndex("_id")));
                     map2.put("pseudo", result.getString(result.getColumnIndex("pseudo")));;
                     map2.put("clefPublique", result.getString(result.getColumnIndex("clefPublique")));
-                    System.out.println("i:"+i+ " " + Json.serialize(map2));
-                    if ((Json.serialize(map2).length() + contenue.length()) > 32000) // Si le paquet est + gros que la capacité maximale par envoie de paquet
+                     if ((Json.serialize(map2).length() + contenue.length()) > 32000) // Si le paquet est + gros que la capacité maximale par envoie de paquet
                     {
                         outputStream.writeUTF(contenue);
 
@@ -75,11 +74,22 @@ public class Client  {
 
                     i++;
                 }
+                outputStream.writeUTF(contenue);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
         } catch (Exception e) {
             System.out.println("Erreur PseudoClefs");
+        }
+        try{
+
+            outputStream.writeUTF("stop");
+
+        }
+        catch(Exception e){
+            System.out.println("Erreur lors de l'envoie des comptes");
         }
 
 
@@ -90,7 +100,7 @@ public class Client  {
         SQLiteDatabase database = db.getDatabase();
         outputStream.writeInt(20);//20 = demande la liste de compte
         outputStream.flush();
-        System.out.println("On a envoyé la demande de clé publique ! ");
+        System.out.println("On envoie getComptes() xD; ");
 
         String message = inputStream.readUTF();
         if (message.equals("start")) {
@@ -109,7 +119,13 @@ public class Client  {
                     String clefPublique = (String) obj.get("clefPublique");
 
                     if ((pseudo != null) && (clefPublique != null)) {
-                       ajouterCompte(db, pseudo, clefPublique);
+                        try{
+                            ajouterCompte(db, pseudo, clefPublique);
+                        }
+                        catch(Exception e) {
+                            System.out.println("Erreur lors de l'ajout du compte");
+                        }
+
                         } else {
                         System.out.println("ERREUR ! " + "pseudo: " + pseudo + " clefpublique: " + clefPublique);
                     }
@@ -117,13 +133,13 @@ public class Client  {
                 }
 
                 msg = inputStream.readUTF();
+                System.out.println("Msg: " + msg);
+                sendComptes(db);
 
             }
-            System.out.println("Serveur nous envoie : " + message);
-        }
-        System.out.println("Serveur nous envoie : " + message);
 
-    }
+        }
+       }
 
     public void ajouterCompte(DatabaseHelper db,String pseudo, String clefPublique, String clefPrivee) {
         SQLiteDatabase database = db.getDatabase();
@@ -133,6 +149,21 @@ public class Client  {
         }catch(Exception e){
             System.out.println("Erreur lors de l'ajout du compte dans leaderboard");
         }
+
+
+    }
+    public void ajouterCompte(DatabaseHelper db,String pseudo, String clefPublique, String clefPrivee,boolean envoie_serveur) {
+        SQLiteDatabase database = db.getDatabase();
+        String[] values = {pseudo, clefPublique, clefPrivee};
+        try {
+            database.execSQL("INSERT INTO compte ('pseudo','clefPublique','clefPrivee') VALUES ('"+values[0]+"', '"+values[1]+"', '"+values[2]+"')");
+       if (envoie_serveur)
+           sendComptes(db);
+
+        }catch(Exception e){
+            System.out.println("Erreur lors de l'ajout du compte dans leaderboard");
+        }
+
 
     }
 

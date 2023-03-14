@@ -1,12 +1,16 @@
 package com.mcgatletico.chessleaderboardblockchain;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
+import android.widget.SimpleCursorAdapter;
+
 import java.io.IOException;
 import java.net.UnknownHostException;
 
 public class ThreadClient {
-        //private static String IP_Serveur = "93.115.97.128";
-    //91.178.73.121
-    private static String IP_Serveur = "192.168.1.17";
+
+    private static String IP_Serveur = "93.115.97.128"; //IP du serveur distant
 
         public static String actualiseBaseDeDonnees(DatabaseHelper db) {
             final  DatabaseHelper madb = db;
@@ -24,7 +28,8 @@ public class ThreadClient {
                         try {
                             client = new Client(IP_Serveur, 52000);
                          //   Server server = new Server(52000);
-                            client.json(dbfinale);
+                            client.getComptes(dbfinale);
+                          //  client.json(dbfinale);
 
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -32,6 +37,8 @@ public class ThreadClient {
 
                 }
             }).start();
+
+
             return "Base de données reçues";
         }
     public static String login(DatabaseHelper db, String username, String clefPublique, String clefPriveeCryptee) {
@@ -55,9 +62,43 @@ public class ThreadClient {
                 try {
                     client = new Client(IP_Serveur, 52000);
                    // client = new Client("localhost", 52000);
+                    client.ajouterCompte(dbfinale, username, clefPublique, clefPriveeCryptee,true);
+                    //client.login(madb, username, clefPublique, clefPriveeCryptee);
 
-                    client.login(madb, username, clefPublique, clefPriveeCryptee);
-                    client.close();
+
+
+
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+
+
+            }
+        }).start();
+        //Handler().postDelayed
+
+        return "Base de données reçues";
+    }
+    public static String envoyerComptes(DatabaseHelper db) {
+        final  DatabaseHelper madb = db;
+        new Thread(new Runnable() {
+            DatabaseHelper dbfinale = madb;
+            @Override
+
+            public void run() {
+                try {
+                    test.liste_ips();
+                } catch (UnknownHostException e) {
+                    throw new RuntimeException(e);
+                }
+                Client client = null;
+                try {
+                    client = new Client(IP_Serveur, 52000);
+                    //   Server server = new Server(52000);
+                    client.sendComptes(dbfinale);
+                    //  client.json(dbfinale);
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -65,8 +106,34 @@ public class ThreadClient {
 
             }
         }).start();
+
+
         return "Base de données reçues";
     }
+
+    public static String ajouterCompte(DatabaseHelper db, String username, String clefPublique, String clefPriveeCryptee) {
+
+        SQLiteDatabase database = db.getDatabase();
+        String[] values = {username, clefPublique, clefPriveeCryptee};
+        try {
+            database.execSQL("INSERT INTO compte ('pseudo','clefPublique','clefPrivee') VALUES ('"+values[0]+"', '"+values[1]+"', '"+values[2]+"')");
+        }catch(Exception e){
+            System.out.println("Erreur lors de l'ajout du compte dans leaderboard");
+        }
+        return "Base de données reçues";
+    }
+    public static String ajouterPartieARecevoir(DatabaseHelper db, String timestamp, String hashPartie, String clefPubliqueJ1, String clefPubliqueJ2,String clefPubliqueArbitre) {
+
+        SQLiteDatabase database = db.getDatabase();
+        String[] values = {timestamp, hashPartie, clefPubliqueJ1, clefPubliqueJ2, clefPubliqueArbitre};
+        try {
+            database.execSQL("INSERT INTO partieARecevoir ('timestamp','hashPartie','clefPubliqueJ1','clefPubliqueJ2','clefPubliqueArbitre', 'voteJ1', 'voteJ2', 'voteArbitre', 'signatureJ1', 'signatureJ2', 'signatureArbitre' ) VALUES ('"+values[0]+"', '"+values[1]+"', '"+values[2]+"'" + ", '"+values[3]+"'" + ", '"+values[4]+"'" + ",'','','','','','')");
+        }catch(Exception e){
+            System.out.println("Erreur lors de l'ajout de la partie à recevoir dans la table partieARecevoir");
+        }
+        return "Entrée validé";
+    }
+
 
     public static String envoyerPartie(String timestampPartie, String hashPartie,String ClefPubliqueJ1, String ClefPubliqueJ2, String ClefPubliqueArbitre){
             System.out.println("Envoyons la partie ! ");

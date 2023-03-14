@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.mcgatletico.chessleaderboardblockchain.R;
 
+import java.util.Objects;
+
 public class AjouterPartieActivity extends AppCompatActivity {
 TextView editTextJoueur1;
     TextView editTextArbitre;
@@ -35,6 +37,10 @@ TextView editTextJoueur1;
         System.out.println(x.getStringExtra("ClefPrivee"));
         System.out.println(x.getStringExtra("ClefPublique"));
         System.out.println(x.getStringExtra("id_player"));
+        String serveur = "false";
+        if (x.getStringExtra("serveur") != null){
+            serveur = x.getStringExtra("serveur");
+        }
         if (x.getStringExtra("Time") != null){
             System.out.println("Le time n'est pas null");
             editTextTime.setText(x.getStringExtra("Time"));
@@ -61,9 +67,11 @@ TextView editTextJoueur1;
                 newintent.putExtra("id", x.getStringExtra("id"));
                 newintent.putExtra("ClefPrivee", x.getStringExtra("ClefPrivee"));
                 newintent.putExtra("ClefPublique", x.getStringExtra("ClefPublique"));
+                newintent.putExtra("serveur", x.getStringExtra("serveur"));
                 startActivity(newintent);
             }
         });
+        String finalServeur = serveur;
         btnEnvoyerPartie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,7 +90,7 @@ TextView editTextJoueur1;
 
 
                         for (int c = 0;c<3;c++){
-                            Cursor cursor = database.rawQuery("SELECT * FROM COMPTES WHERE Pseudo = '" + finalListeNomParticipants[c] + "'",null);
+                            Cursor cursor = database.rawQuery("SELECT * FROM compte WHERE pseudo = '" + finalListeNomParticipants[c] + "'",null);
                             cursor.moveToFirst();
                             listeJoueurs[c][0] = cursor.getString(1);
                             listeJoueurs[c][1] = cursor.getString(2);
@@ -93,10 +101,11 @@ TextView editTextJoueur1;
                         System.out.println("Joueur 1 : "+listeJoueurs[0][0].toString()+" "+listeJoueurs[0][1].toString() + " Joueur 2 : "+listeJoueurs[1][0].toString()+" "+listeJoueurs[1][1].toString() +  " Arbitre : " + listeJoueurs[2][0].toString()+" "+listeJoueurs[2][1].toString());
                        String timestampPartie = Timestamp.convertToTimestamp(editTextTime.getText().toString());
                        String hashPartie = SHA2.encrypt(timestampPartie + "-" + listeJoueurs[0][1].toString() + "-" + listeJoueurs[1][1].toString() + "-" + listeJoueurs[2][1].toString());
-                        ThreadClient.envoyerPartie(timestampPartie,hashPartie,listeJoueurs[0][1].toString(),listeJoueurs[1][1].toString(),listeJoueurs[2][1].toString());
-
-
-                        Toast.makeText(AjouterPartieActivity.this, "Partie ajoutée", Toast.LENGTH_SHORT).show();
+                       if (finalServeur == "true" )
+                       ThreadClient.envoyerPartie(timestampPartie,hashPartie,listeJoueurs[0][1].toString(),listeJoueurs[1][1].toString(),listeJoueurs[2][1].toString());
+                        else if (finalServeur == "false")
+                            ThreadClient.ajouterPartieARecevoir(maBaseDeDonnees,timestampPartie,hashPartie,listeJoueurs[0][1].toString(),listeJoueurs[1][1].toString(),listeJoueurs[2][1].toString());
+                        Toast.makeText(AjouterPartieActivity.this, "Partie ajoutée" + (Objects.equals(finalServeur, "true") ?"Au serveur VPS":"En local, les demandes aux autres participants seront envoyés!  "), Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
                         Toast.makeText(AjouterPartieActivity.this, "Erreur lors de l'ajout de la partie - Base de données inaccessible", Toast.LENGTH_SHORT).show();
                     }
