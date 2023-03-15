@@ -113,11 +113,16 @@ TextView editTextJoueur1;
                         System.out.println("Joueur 1 : "+listeJoueurs[0][0].toString()+" "+listeJoueurs[0][1].toString() + " Joueur 2 : "+listeJoueurs[1][0].toString()+" "+listeJoueurs[1][1].toString() +  " Arbitre : " + listeJoueurs[2][0].toString()+" "+listeJoueurs[2][1].toString());
                        String timestampPartie = Timestamp.convertToTimestamp(editTextTime.getText().toString());
                        String hashPartie = SHA2.encrypt(timestampPartie + "-" + listeJoueurs[0][1].toString() + "-" + listeJoueurs[1][1].toString() + "-" + listeJoueurs[2][1].toString());
-                       if (finalServeur == "true" )
-                       ThreadClient.envoyerPartie(timestampPartie,hashPartie,listeJoueurs[0][1].toString(),listeJoueurs[1][1].toString(),listeJoueurs[2][1].toString());
-                        else if (finalServeur == "false")
-                            ThreadClient.ajouterPartieARecevoir(maBaseDeDonnees,timestampPartie,hashPartie,listeJoueurs[0][1].toString(),listeJoueurs[1][1].toString(),listeJoueurs[2][1].toString());
+                       if (Objects.equals(finalServeur, "true")) {
+                           ThreadClient.envoyerPartie(timestampPartie, hashPartie, listeJoueurs[0][1].toString(), listeJoueurs[1][1].toString(), listeJoueurs[2][1].toString());
+
+                       }
+                       else if (Objects.equals(finalServeur, "false")) {
+                           ThreadClient.ajouterPartieARecevoir(maBaseDeDonnees, timestampPartie, hashPartie, listeJoueurs[0][1].toString(), listeJoueurs[1][1].toString(), listeJoueurs[2][1].toString());
+
+                       }
                         Toast.makeText(AjouterPartieActivity.this, "Partie ajoutée" + (Objects.equals(finalServeur, "true") ?"Au serveur VPS":"En local, les demandes aux autres participants seront envoyés!  "), Toast.LENGTH_LONG).show();
+
                     } catch (Exception e) {
                         Toast.makeText(AjouterPartieActivity.this, "Erreur lors de l'ajout de la partie - Base de données inaccessible", Toast.LENGTH_SHORT).show();
                     }

@@ -207,10 +207,12 @@ public class MainActivity extends AppCompatActivity {
                                 System.out.println("Encodage " + RSAPSS.encode("Salut",RSAPSS.privateKey));
                                System.out.println("Decodage réussie ? " + RSAPSS.decode("Salut",RSAPSS.encode("Salut",RSAPSS.privateKey),RSAPSS.publicKey));
                                 ClefPriveeCryptee = RSAPSS.privateKeyToString();
-                                Toast.makeText(MainActivity.this, "Clef publique : " + ClefPublique, Toast.LENGTH_LONG).show();
 
 
                                 ClefPriveeCryptee = CryptageClef.encrypt(ClefPriveeCryptee, editPassword.getText().toString());
+                            }
+                            else{
+                                Toast.makeText(MainActivity.this, "Pseudo existant Veuillez changer de pseudo ! ", Toast.LENGTH_LONG).show();
                             }
                         }catch(Exception e){
                             Toast.makeText(MainActivity.this, "Erreur lors de la vérification du pseudo ! ", Toast.LENGTH_LONG).show();
@@ -272,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                                 // System.out.println(Arrays.toString(new Set[]{Security.getAlgorithms("Signature")}));
                                 // System.out.println("gROS GROS GROS");
 
-                                RSAPSS rsapss = new RSAPSS();Toast.makeText(MainActivity.this, "Encodage de message : " + RSAPSS.encode("Salut",RSAPSS.privateKey), Toast.LENGTH_LONG).show();
+                                RSAPSS rsapss = new RSAPSS(); // permet d'initialiser la clef RSAPSS
                                 ClefPublique = RSAPSS.publicKeyToString();
 
                                 ClefPriveeCryptee = RSAPSS.privateKeyToString();

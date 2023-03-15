@@ -126,7 +126,7 @@ btnRetourListePartiesASigner.setOnClickListener(new View.OnClickListener() {
 
                    // On actualise ici !!!! Avec un thread avec le temps
                    Toast.makeText(ListePartiesASignerActivity.this, "Peer-to-Peer Affichage des parties A RECEVOIR pour le moment", Toast.LENGTH_SHORT).show();
-                   ThreadClient.recevoirListeParties(maBaseDeDonnees);
+                // Pas besoin car présence en local !    ThreadClient.recevoirListeParties(maBaseDeDonnees);
 
                    try {
                        new Handler().postDelayed(new Runnable() {
@@ -135,10 +135,10 @@ btnRetourListePartiesASigner.setOnClickListener(new View.OnClickListener() {
                                String contenueFiltreSql = "";
 
                                if (radioButtonTout.isChecked()) {
-                                   contenueFiltreSql = " WHERE ClefPubliqueJ1 = '" + ClefPublique + "' OR ClefPubliqueJ2 = '" + ClefPublique + "' OR ClefPubliqueArbitre = '" + ClefPublique + "'";
+                                   contenueFiltreSql = " WHERE clefPubliqueJ1 = '" + ClefPublique + "' OR clefPubliqueJ2 = '" + ClefPublique + "' OR clefPubliqueArbitre = '" + ClefPublique + "'";
                                }
 
-                               Cursor c = database.rawQuery("SELECT partieARecevoir._id, strftime('%d-%m-%Y %H:%M', datetime(partieARecevoir.timestamp/1000, 'unixepoch')) as dateDuMatch, partieARecevoir.hashPartie, \n" +
+                               Cursor c = database.rawQuery("SELECT partieARecevoir._id, strftime('%d-%m-%Y %H:%M', datetime(partieARecevoir.timestamp/1000, 'unixepoch')) as dateDuMatch, partieARecevoir.hashPartie, " +
                                        "compte1.pseudo AS joueur1, " +
                                        "compte2.pseudo AS joueur2, " +
                                        "compte3.pseudo AS arbitre " +
@@ -147,11 +147,27 @@ btnRetourListePartiesASigner.setOnClickListener(new View.OnClickListener() {
                                        "LEFT JOIN compte AS compte2 ON partieARecevoir.clefPubliqueJ2 = compte2.clefPublique " +
                                        "LEFT JOIN compte AS compte3 ON partieARecevoir.clefPubliqueArbitre = compte3.clefPublique ", null);
 
+                               Cursor d = database.rawQuery("SELECT * FROM partieARecevoir", null);
+                               Cursor e = database.rawQuery("SELECT * FROM compte", null);
+                               if (d.moveToNext()) {
+                                    System.out.println("On a reçu le query ");
+                                   System.out.println("PartieARecevoir - 667 SIUUU il y'a : " + d.getCount());
+                               }
+
+                               System.out.println("compte: " + e.getCount());
+
+
+                               System.out.println("PartieARecevoir - 667 il y'a : " + d.getCount());
+
+
+
                                String[] from = {"hashPartie", "joueur1", "joueur2", "dateDuMatch"};
 
                                int[] to = {R.id.textView18, R.id.textView19, R.id.textView20, R.id.textView21};
                                SimpleCursorAdapter adapter2 = new SimpleCursorAdapter(ListePartiesASignerActivity.this, R.layout.elementlistepartiesasigner, c, from, to, 0);
                                listViewListePartiesASigner.setAdapter(adapter2);
+                               System.out.println(listViewListePartiesASigner.getCount());
+                               System.out.println("PartieARecevoir - 667#2");
 
                            }
                        }, 3000);

@@ -30,6 +30,8 @@ RadioButton choixVictoire;
 RadioButton choixDefaite;
 RadioButton choixNul;
 Button btnRetourSignerPartie;
+
+Button btnSauvegarderPartie;
 Button btnVoter;
 String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
     @Override
@@ -45,6 +47,7 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signer_partie);
         btnRetourSignerPartie = (Button) findViewById(R.id.btnRetourSignerPartie);
+        btnSauvegarderPartie = (Button) findViewById(R.id.btnSauvegarderPartie);
         textTitreSignerPartie = (TextView) findViewById(R.id.textTitreSignerPartie);
         textPseudoJ1Signature = (TextView) findViewById(R.id.textPseudoJ1Signature);
         textPseudoJ2Signature = (TextView) findViewById(R.id.textPseudoJ2Signature);
@@ -72,7 +75,7 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                     String contenueFiltreSql = "WHERE hashPartie = '" + hashPartie + "'";
 
                     //Cursor c = database.rawQuery("SELECT * FROM PARTIES" + contenueFiltreSql,null);
-                    Cursor c = database.rawQuery("SELECT partieARecevoir._id,partieARecevoir.clefPubliqueJ1,partieARecevoir.clefPubliqueJ2,partieARecevoir.clefPubliqueArbitre, partieARecevoir.voteJ1,partieARecevoir.voteJ2,partieARecevoir.voteArbitre,partieARecevoir.signatureJ1,partieARecevoir.signatureJ2,partieARecevoir.signatureArbitre, strftime('%d-%m-%Y %H:%M', datetime(partieARecevoir.timestamp/1000, 'unixepoch')) as dateDuMatch, partieARecevoir.hashPartie, \n" +
+                    Cursor c = database.rawQuery("SELECT partieARecevoir._id,partieARecevoir.clefPubliqueJ1,partieARecevoir.clefPubliqueJ2,partieARecevoir.clefPubliqueArbitre, partieARecevoir.voteJ1,partieARecevoir.voteJ2,partieARecevoir.voteArbitre,partieARecevoir.signatureJ1,partieARecevoir.signatureJ2,partieARecevoir.signatureArbitre,partieARecevoir.timestamp, strftime('%d-%m-%Y %H:%M', datetime(partieARecevoir.timestamp/1000, 'unixepoch')) as dateDuMatch, partieARecevoir.hashPartie, \n" +
                             "compte1.pseudo AS joueur1, " +
                             "compte2.pseudo AS joueur2, " +
                             "compte3.pseudo AS arbitre " +
@@ -88,6 +91,7 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                        String voteJ2 = c.getString(c.getColumnIndex("voteJ2"));
                        String voteArbitre = c.getString(c.getColumnIndex("voteArbitre"));
                        String dateDuMatch = c.getString(c.getColumnIndex("dateDuMatch"));
+                       String timestamp = c.getString(c.getColumnIndex("timestamp"));
                        String joueur1 = c.getString(c.getColumnIndex("joueur1"));
                        String joueur2 = c.getString(c.getColumnIndex("joueur2"));
                         String arbitre = c.getString(c.getColumnIndex("arbitre"));
@@ -95,8 +99,8 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                         String ClefPubliqueJ2 = c.getString(c.getColumnIndex("clefPubliqueJ2"));
                         String ClefPubliqueArbitre = c.getString(c.getColumnIndex("clefPubliqueArbitre"));
                        String signatureJ1 = c.getString(c.getColumnIndex("signatureJ1"));
-                          String signatureJ2 = c.getString(c.getColumnIndex("signatureJ2"));
-                            String signatureArbitre = c.getString(c.getColumnIndex("signatureArbitre"));
+                       String signatureJ2 = c.getString(c.getColumnIndex("signatureJ2"));
+                       String signatureArbitre = c.getString(c.getColumnIndex("signatureArbitre"));
 
                         textTitreSignerPartie.setText("Signer la partie " + hashPartie + " du " + dateDuMatch);
                        textPseudoJ1Signature.setText(joueur1);
@@ -115,6 +119,7 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                         Toast.makeText(SignerPartieActivity.this, "Vous n'êtes pas concerné par cette partie ! Tu peux tenter de voter, les autres peer refuseront la donnée et tu perdras des points ! ", Toast.LENGTH_SHORT).show() ;
                     }
 
+                    int nbr_vote = 0;
                     if (!voteJ1.equals("")){
                         textPseudoJ1Signature.setTextColor(Color.parseColor(Couleurs[0]));
                         // On essaie de déchiffrer le vote
@@ -124,8 +129,9 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                             String[] parties = voteJ1.split("-");
                             String hashduVote = parties[0];
                             String Vote = parties[1];
-                            if (Vote.length() == 1 && signatureEstValide)
+                            if (Vote.length() == 1 && signatureEstValide){
                                 textPseudoJ1Signature.setText(joueur1 + " a voté " + Vote);
+                                nbr_vote +=1 ;}
                             else
                                 throw new Exception("Vote invalide");
                         }catch(Exception e){
@@ -144,9 +150,9 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                             String[] parties = voteJ2.split("-");
                             String hashduVote = parties[0];
                             String Vote = parties[1];
-                            if (Vote.length() == 1 && signatureEstValide)
+                            if (Vote.length() == 1 && signatureEstValide){
                                 textPseudoJ2Signature.setText(joueur2 + " a voté " + Vote);
-
+                            nbr_vote +=1 ;}
                             else
                                 throw new Exception("Vote invalide");
 
@@ -166,9 +172,9 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                             String[] parties = voteArbitre.split("-");
                             String hashduVote = parties[0];
                             String Vote = parties[1];
-                            if (Vote.length() == 1 && signatureEstValide)
+                            if (Vote.length() == 1 && signatureEstValide){
                                 textPseudoArbitreSignature.setText(arbitre + " a voté " + Vote);
-
+                                nbr_vote +=1 ;}
                             else
                                 throw new Exception("Vote invalide");
 
@@ -181,7 +187,31 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
                         textPseudoArbitreSignature.setTextColor(Color.parseColor(Couleurs[1]));
                     }
 
+                       if (nbr_vote == 3)
+                       {
+                           Toast.makeText(SignerPartieActivity.this, "Partie complète tu peux l'enregistrer ! ", Toast.LENGTH_LONG).show() ;
+                            btnSauvegarderPartie.setEnabled(true);
+
+
+                            btnSauvegarderPartie.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    try {
+                                        String hashVote = SHA2.encrypt(voteJ1 + "-" + voteJ2 + "-" + voteArbitre);
+                                        String signatureArbitreHashVote = RSAPSS.encode(hashVote, RSAPSS.privateKeyFromString(clefPrivee));
+
+                                        Toast.makeText(SignerPartieActivity.this, "Reponse de la demande:  " + ThreadClient.ajouterPartie(maBaseDeDonnees,timestamp,hashPartie,ClefPubliqueJ1,ClefPubliqueJ2,ClefPubliqueArbitre,voteJ1,voteJ2,voteArbitre,signatureJ1,signatureJ2,signatureArbitre,hashVote,signatureArbitreHashVote), Toast.LENGTH_LONG).show();
+                                    } catch (Exception e) {
+                                        Toast.makeText(SignerPartieActivity.this, "Erreur lors de la signature du hash du vote ! ", Toast.LENGTH_LONG).show();
+                                    }
+
+                                    //  Toast.makeText(ThreadClient.ajouterPartie(maBaseDeDonnees,timestamp,hashPartie,ClefPubliqueJ1,ClefPubliqueJ2,ClefPubliqueArbitre,voteJ1,voteJ2,voteArbitre,signatureJ1,signatureJ2,signatureArbitre,signatureArbitreHashVote,hashVote));
+                                }
+                            });
+                       }
+
                    }
+
 
                    else
                    {
@@ -256,7 +286,7 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
 
 
                         System.out.println("On test de voter" + hashPartie);
-                        ThreadClient.envoyerSignature(hashPartie, vote ,hashVote, signatureVote);
+                        ThreadClient.ajouterSignature(maBaseDeDonnees,hashPartie, vote ,hashVote, signatureVote);
                      //   database.update("PARTIES", values, "HashPartie='" + hashPartie + "'",null);
                         //On try de déchiffrer le vote
                         Toast.makeText(SignerPartieActivity.this, "Vote enregistré ! ", Toast.LENGTH_SHORT).show();

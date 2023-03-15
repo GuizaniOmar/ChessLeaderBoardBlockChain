@@ -115,11 +115,23 @@
                 android:layout_height="wrap_content"
                 android:text="Perdu" />
 
-            <Button
-                android:id="@+id/btnVoter"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Voter" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnVoter"
+                    android:layout_width="254dp"
+                    android:layout_height="wrap_content"
+                    android:text="Voter" />
+
+                <Button
+                    android:id="@+id/btnRetourSignerPartie"
+                    android:layout_width="153dp"
+                    android:layout_height="wrap_content"
+                    android:text="Retour" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btnSauvegarderPartie"
@@ -128,11 +140,6 @@
                 android:enabled="false"
                 android:text="Sauvegarder Partie(3 votes seulement)" />
 
-            <Button
-                android:id="@+id/btnRetourSignerPartie"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Retour" />
         </RadioGroup>
 
     </LinearLayout>
