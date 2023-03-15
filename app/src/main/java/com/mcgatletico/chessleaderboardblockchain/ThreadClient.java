@@ -126,7 +126,7 @@ public class ThreadClient {
         }
         return "Base de données reçues";
     }
-    public static String ajouterPartieARecevoir(DatabaseHelper db, String timestamp, String hashPartie, String clefPubliqueJ1, String clefPubliqueJ2,String clefPubliqueArbitre) {
+    public static String ajouterPartieARecevoir(DatabaseHelper db, String timestamp, String hashPartie,String clefPubliqueArbitre, String clefPubliqueJ1, String clefPubliqueJ2) {
 
         SQLiteDatabase database = db.getDatabase();
 
@@ -164,8 +164,8 @@ try {
 
 
         }
-            return "Partie non ajoutée - Autre bug ! ";
-        }
+            return isSignatureHashVoteCorrect ? "Partie non ajoutée - Signature des votes par l'arbitre est incorrecte. Es-tu l'arbitre ?! " : "Problème de signature, la vérification de la validité des signatures a échoué  !";
+          }
         catch(Exception e) {
             return "Problème de signature - Partie non ajoutée ! ";
         }
