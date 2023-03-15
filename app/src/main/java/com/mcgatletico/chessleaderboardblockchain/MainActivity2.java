@@ -17,6 +17,8 @@ public class MainActivity2 extends AppCompatActivity {
     Button btnAjouterPartie;
     Button btnAfficherParties;
     Button btnRetourMain;
+
+    Button btnVoirParties;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
@@ -34,6 +36,7 @@ public class MainActivity2 extends AppCompatActivity {
         btnAfficherParties = findViewById(R.id.btnAfficherParties);
         txtTitre2 = findViewById(R.id.txtTitre2);
         txtTitre2petit = findViewById(R.id.txtTitre2petit);
+        btnVoirParties = findViewById(R.id.btnVoirParties);
         Intent x = getIntent();
         txtTitre2.setText("Tu es désormais connecté ! Bienvenue " + x.getStringExtra("id"));
 
@@ -48,6 +51,15 @@ public class MainActivity2 extends AppCompatActivity {
             txtTitre2petit.setText(String.format("Tu as bien une clef privée ! Bienvenue, tu es " + (x.getStringExtra("serveur").equals("true") ? "Connecté en tant que serveur, pas en peer-to-peer" : "Connecté en tant que peer-to-peer !")));
             btnAjouterPartie.setOnClickListener(v -> {
                 Intent intent = new Intent(MainActivity2.this, AjouterPartieActivity.class);
+                intent.putExtra("id", x.getStringExtra("id"));
+                intent.putExtra("ClefPrivee", x.getStringExtra("ClefPrivee"));
+                intent.putExtra("ClefPublique", x.getStringExtra("ClefPublique"));
+                intent.putExtra("serveur", x.getStringExtra("serveur"));
+                startActivity(intent);
+            });
+
+            btnVoirParties.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity2.this, ListePartieActivity.class);
                 intent.putExtra("id", x.getStringExtra("id"));
                 intent.putExtra("ClefPrivee", x.getStringExtra("ClefPrivee"));
                 intent.putExtra("ClefPublique", x.getStringExtra("ClefPublique"));
@@ -71,6 +83,7 @@ public class MainActivity2 extends AppCompatActivity {
 
             btnAjouterPartie.setEnabled(false);
             btnAfficherParties.setEnabled(false);
+            btnVoirParties.setEnabled(false);
             txtTitre2petit.setText("Tu n'as pas de clé privée, tu ne peux pas jouer :/ Veuillez entrez le mot de passe de décryption de la clef privée et séléctionner le bon pseudo (en rouge), appuie sur Retour");
         }
     }
