@@ -69,7 +69,22 @@ public class Elo {
         // Calculer le nouvel Elo du joueur
         return (int) Math.round(oldElo + K * (score - expectedScore));
     }
+    public static HashMap<String, Integer> updateEloForSingleGame(String joueur1, String joueur2, int eloJoueur1, int eloJoueur2, double score) {
+        // Créer une map pour stocker le classement des joueurs
+        HashMap<String, Integer> eloMap = new HashMap<>();
 
+        // Calculer le nouvel Elo des joueurs
+        int newEloJoueur1 = calculateNewElo(eloJoueur1, eloJoueur2, score);
+        int newEloJoueur2 = calculateNewElo(eloJoueur2, eloJoueur1, 1 - score);
+        System.out.println("New Elo for " + joueur1 + " : " + newEloJoueur1);
+        System.out.println("New Elo for " + joueur2 + " : " + newEloJoueur2);
+
+        // Mettre à jour la map avec les nouveaux Elo
+        eloMap.put(joueur1, newEloJoueur1);
+        eloMap.put(joueur2, newEloJoueur2);
+
+        return eloMap;
+    }
     public static void updateElo(List<Partie> parties) {
         // Créer une map pour stocker le classement des joueurs
         HashMap<String, Integer> eloMap = new HashMap<>();
