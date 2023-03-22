@@ -17,7 +17,7 @@ public class MainActivity2 extends AppCompatActivity {
     Button btnAjouterPartie;
     Button btnAfficherParties;
     Button btnRetourMain;
-
+    Button btnVoirLeaderboard;
     Button btnVoirParties;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -37,9 +37,21 @@ public class MainActivity2 extends AppCompatActivity {
         txtTitre2 = findViewById(R.id.txtTitre2);
         txtTitre2petit = findViewById(R.id.txtTitre2petit);
         btnVoirParties = findViewById(R.id.btnVoirParties);
+        btnVoirLeaderboard = findViewById(R.id.btnVoirLeaderboard);
         Intent x = getIntent();
         txtTitre2.setText("Tu es désormais connecté ! Bienvenue " + x.getStringExtra("id"));
+        btnVoirLeaderboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity2.this, LeaderboardActivity.class);
+                intent.putExtra("id", x.getStringExtra("id"));
+                intent.putExtra("ClefPrivee", x.getStringExtra("ClefPrivee"));
+                intent.putExtra("ClefPublique", x.getStringExtra("ClefPublique"));
 
+                intent.putExtra("serveur", x.getStringExtra("serveur"));
+                startActivity(intent);
+            }
+        });
         btnRetourMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

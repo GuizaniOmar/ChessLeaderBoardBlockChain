@@ -213,12 +213,14 @@ public class ThreadClient {
         if (isSignatureJ1Correct && isSignatureJ2Correct && isSignatureArbitreCorrect && isSignatureHashVoteCorrect) {
             Cursor c = database.rawQuery("SELECT * FROM partie WHERE hashPartie = '" + hashPartie + "'", null);
             if (c.getCount() > 0){
+                database.execSQL("DELETE FROM partieARecevoir WHERE hashPartie = '" + hashPartie + "'");
                 return "Partie déjà présente dans les parties ! ";
             }
 
             String[] values = {timestamp, hashPartie, clefPubliqueJ1, clefPubliqueJ2, clefPubliqueArbitre, voteJ1, voteJ2, voteArbitre, signatureJ1, signatureJ2, signatureArbitre, hashVote, signatureArbitreHashVote};
 try {
     database.execSQL("INSERT INTO partie ('timestamp','hashPartie','clefPubliqueJ1','clefPubliqueJ2','clefPubliqueArbitre', 'voteJ1', 'voteJ2', 'voteArbitre', 'signatureJ1', 'signatureJ2', 'signatureArbitre', 'hashVote', 'signatureArbitreHashVote' ) VALUES ('" + values[0] + "', '" + values[1] + "', '" + values[2] + "'" + ", '" + values[3] + "'" + ", '" + values[4] + "'" + ", '" + values[5] + "'" + ", '" + values[6] + "'" + ", '" + values[7] + "'" + ", '" + values[8] + "'" + ", '" + values[9] + "'" + ", '" + values[10] + "'" + ", '" + values[11] + "'" + ", '" + values[12] + "')");
+    database.execSQL("DELETE FROM partieARecevoir WHERE hashPartie = '" + hashPartie + "'");
     return "Partie ajoutée ! ";
 } catch (Exception e) {
     return "Partie non ajoutée - Problème SQL ! ";

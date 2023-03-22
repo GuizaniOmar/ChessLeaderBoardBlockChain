@@ -45,6 +45,12 @@
             android:text="Voir les Parties" />
 
         <Button
+            android:id="@+id/btnVoirLeaderboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Voir Leaderboard" />
+
+        <Button
             android:id="@+id/btnRetourMain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
