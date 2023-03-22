@@ -126,6 +126,8 @@ public class ThreadClient {
         }
         return "Base de données reçues";
     }
+
+
     public static String ajouterPartieARecevoir(DatabaseHelper db, String timestamp, String hashPartie,String clefPubliqueArbitre, String clefPubliqueJ1, String clefPubliqueJ2) {
 
         SQLiteDatabase database = db.getDatabase();
@@ -137,6 +139,67 @@ public class ThreadClient {
             System.out.println("Erreur lors de l'ajout de la partie à recevoir dans la table partieARecevoir");
         }
         return "Entrée validé";
+    }
+
+    public static String ajouterConfirmation(DatabaseHelper db, String hashPartie, String hashVote, String clefPublique, String signature)  {
+        SQLiteDatabase database = db.getDatabase();
+        // On va vérifier toutes les signatures !
+        if ((!hashVote.equals(hashPartie + "-N")) && (!hashVote.equals(hashPartie + "-O")))
+            return "Vote de la Partie incorrecte! ";
+        try{
+            boolean isSignatureCorrect = RSAPSS.decode(hashVote, signature, RSAPSS.publicKeyFromString(clefPublique));
+            if (isSignatureCorrect) {
+                Cursor c = database.rawQuery("SELECT * FROM confirmation WHERE hashPartie = '" + hashPartie + "' and clefPublique = '" + clefPublique + "'", null);
+                if (c.getCount() > 0){
+                    return "Confirmation déjà présente dans la base de donnée ! ";
+                }
+
+                String[] values = {hashPartie, hashVote, clefPublique, signature};
+                try {
+                    database.execSQL("INSERT INTO confirmation ('hashPartie', 'hashVote','clefPublique','signatureHashVote' ) VALUES ( '" + values[0] + "', '" + values[1] + "', '" + values[2] + "', '" + values[3] + "')");
+                    return "Confirmation ajoutée ! ";
+                } catch (Exception e) {
+                    return "Confirmation non ajoutée - Problème SQL ! ";
+                }
+
+
+
+            }
+            return isSignatureCorrect ? "Confirmation non ajoutée - Signature incorrecte. As-tu une clef privée ?! " : "Problème de signature, la vérification de la validité des signatures a échoué  !";
+        }
+        catch(Exception e) {
+            return "Problème de signature - Confirmation non ajoutée ! ";
+        }
+    }
+    public static String ajouterPlainte(DatabaseHelper db, String hashPartie, String hashVote, String clefPublique, String signature)  {
+        SQLiteDatabase database = db.getDatabase();
+        // On va vérifier toutes les signatures !
+        if ((!hashVote.equals(hashPartie + "-N")) && (!hashVote.equals(hashPartie + "-O")))
+            return "Plainte - Vote de la Partie incorrecte! ";
+        try{
+            boolean isSignatureCorrect = RSAPSS.decode(hashVote, signature, RSAPSS.publicKeyFromString(clefPublique));
+            if (isSignatureCorrect) {
+                Cursor c = database.rawQuery("SELECT * FROM plainte WHERE hashPartie = '" + hashPartie + "' and clefPublique = '" + clefPublique + "'", null);
+                if (c.getCount() > 0){
+                    return "Plainte  déjà présente dans la base de donnée ! ";
+                }
+
+                String[] values = {hashPartie, hashVote, clefPublique, signature};
+                try {
+                    database.execSQL("INSERT INTO plainte ('hashPartie', 'hashVote','clefPublique','signatureHashVote' ) VALUES ( '" + values[0] + "', '" + values[1] + "', '" + values[2] + "', '" + values[3] + "')");
+                    return "Plainte ajoutée ! ";
+                } catch (Exception e) {
+                    return "Plainte non ajoutée - Problème SQL ! ";
+                }
+
+
+
+            }
+            return isSignatureCorrect ? "plainte non ajoutée - Signature incorrecte. As-tu une clef privée ?! " : "Problème de signature, la vérification de la validité des signatures a échoué  !";
+        }
+        catch(Exception e) {
+            return "Problème de signature - Plainte non ajoutée ! ";
+        }
     }
 
     public static String ajouterPartie(DatabaseHelper db, String timestamp, String hashPartie, String clefPubliqueJ1, String clefPubliqueJ2,String clefPubliqueArbitre, String voteJ1, String voteJ2, String voteArbitre, String signatureJ1, String signatureJ2, String signatureArbitre, String hashVote, String signatureArbitreHashVote)  {

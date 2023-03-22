@@ -62,7 +62,7 @@
             android:id="@+id/textView23"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Selection du Vote" />
+            android:text="Je suis : " />
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -72,26 +72,26 @@
                 android:id="@+id/choixJ1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Joueur 1" />
+                android:text="le joueur 1" />
 
             <RadioButton
                 android:id="@+id/choixJ2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Joueur 2" />
+                android:text="le joueur 2" />
 
             <RadioButton
                 android:id="@+id/choixArbitre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Arbitre" />
+                android:text="l'arbitre" />
         </RadioGroup>
 
         <TextView
             android:id="@+id/textView24"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Je déclare que le joueur 1 à :" />
+            android:text="Mon vote : " />
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -101,19 +101,19 @@
                 android:id="@+id/choixVictoire"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Gagné" />
+                android:text="le joueur 1 a gagné" />
 
             <RadioButton
                 android:id="@+id/choixNul"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Match Nul" />
+                android:text="match nul" />
 
             <RadioButton
                 android:id="@+id/choixDefaite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Perdu" />
+                android:text="le joueur 2 a gagné" />
 
             <LinearLayout
                 android:layout_width="match_parent"
