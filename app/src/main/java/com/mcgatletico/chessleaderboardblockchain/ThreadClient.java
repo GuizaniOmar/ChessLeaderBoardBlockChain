@@ -257,7 +257,7 @@ try {
                     "FROM partie " +
                     "LEFT JOIN compte AS compte1 ON partie.ClefPubliqueJ1 = compte1.clefPublique " +
                     "LEFT JOIN compte AS compte2 ON partie.ClefPubliqueJ2 = compte2.clefPublique " +
-                    "LEFT JOIN compte AS compte3 ON partie.ClefPubliqueArbitre = compte3.clefPublique " , null);
+                    "LEFT JOIN compte AS compte3 ON partie.ClefPubliqueArbitre = compte3.clefPublique ORDER BY CAST(partie.timestamp AS DATETIME) ASC" , null);
             while(cPartie.moveToNext()){
                 // On va traiter les données
                 // on récupèrer le hashPartie,clefPubliqueJ1,clefPubliqueJ2,clefPubliqueArbitre,voteJ1,voteJ2,voteArbitre

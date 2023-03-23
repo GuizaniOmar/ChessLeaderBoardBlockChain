@@ -2,6 +2,7 @@ package com.mcgatletico.chessleaderboardblockchain;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -64,10 +66,26 @@ public class MainActivity extends AppCompatActivity {
         btnLogin = (Button) findViewById(R.id.btnLogin);
         listview1 = (ListView) findViewById(R.id.listview1);
         editTextPseudo = (EditText) findViewById(R.id.editTextPseudo);
-        switch1 = (Switch) findViewById(R.id.switch1);
-
+          switch1 = (Switch) findViewById(R.id.switch1);
+        editTextPseudo.setFocusable(false);
+        editPassword.setFocusable(false);
         DiscordMessage.EnvoieMessage("Un client \\nse connecte à l'application");
 
+
+        editTextPseudo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editTextPseudo.setFocusableInTouchMode(true);
+                editTextPseudo.requestFocus();
+            }
+        });
+        editPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editPassword.setFocusableInTouchMode(true);
+                editPassword.requestFocus();
+            }
+        });
         // On test de récupèrer le socket du serveur
 
 

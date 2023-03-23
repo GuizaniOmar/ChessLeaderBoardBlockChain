@@ -59,6 +59,7 @@
             android:id="@+id/btnLogin2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
             android:text="Ajouter Compte (Local)" />
 
         <Button

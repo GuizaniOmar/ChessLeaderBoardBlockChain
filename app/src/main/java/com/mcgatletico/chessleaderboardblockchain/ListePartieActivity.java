@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 public class ListePartieActivity extends AppCompatActivity {
 Button btnRetour;
@@ -58,7 +59,7 @@ ListView listViewPartie;
                         "FROM partie " +
                         "LEFT JOIN compte AS compte1 ON partie.ClefPubliqueJ1 = compte1.clefPublique " +
                         "LEFT JOIN compte AS compte2 ON partie.ClefPubliqueJ2 = compte2.clefPublique " +
-                        "LEFT JOIN compte AS compte3 ON partie.ClefPubliqueArbitre = compte3.clefPublique " + contenueFiltreSql, null);
+                        "LEFT JOIN compte AS compte3 ON partie.ClefPubliqueArbitre = compte3.clefPublique ORDER BY CAST(partie.timestamp AS DATETIME) ASC" + contenueFiltreSql, null);
 
                 String[] from = {"dateDuMatch", "joueur1", "joueur2","arbitre","hashPartie"};
 
@@ -73,7 +74,10 @@ ListView listViewPartie;
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Cursor c = (Cursor) listViewPartie.getItemAtPosition(i);
+
                 @SuppressLint("Range") String hashPartie = c.getString(c.getColumnIndex("hashPartie"));
+
+              //  Toast.makeText(ListePartieActivity.this, "Vous avez cliqué sur la partie (" + i + ") " + hashPartie, Toast.LENGTH_SHORT).show();
                 Intent newintent = new Intent(ListePartieActivity.this,DetailPartieActivity.class);
                 newintent.putExtra("id",id);
                 newintent.putExtra("ClefPrivee",ClefPrivee);

@@ -145,26 +145,18 @@ btnRetourListePartiesASigner.setOnClickListener(new View.OnClickListener() {
                                        "FROM partieARecevoir " +
                                        "LEFT JOIN compte AS compte1 ON partieARecevoir.clefPubliqueJ1 = compte1.clefPublique " +
                                        "LEFT JOIN compte AS compte2 ON partieARecevoir.clefPubliqueJ2 = compte2.clefPublique " +
-                                       "LEFT JOIN compte AS compte3 ON partieARecevoir.clefPubliqueArbitre = compte3.clefPublique ", null);
-
-                               Cursor d = database.rawQuery("SELECT * FROM partieARecevoir", null);
-                               Cursor e = database.rawQuery("SELECT * FROM compte", null);
-                               if (d.moveToNext()) {
-                                    System.out.println("On a reçu le query ");
-                                   System.out.println("PartieARecevoir - 667 SIUUU il y'a : " + d.getCount());
-                               }
-
-                               System.out.println("compte: " + e.getCount());
-
-
-                               System.out.println("PartieARecevoir - 667 il y'a : " + d.getCount());
+                                       "LEFT JOIN compte AS compte3 ON partieARecevoir.clefPubliqueArbitre = compte3.clefPublique ORDER BY CAST(partieARecevoir.timestamp AS DATETIME) ASC", null);
 
 
 
-                               String[] from = {"hashPartie", "joueur1", "joueur2", "dateDuMatch"};
 
-                               int[] to = {R.id.textView18, R.id.textView19, R.id.textView20, R.id.textView21};
-                               SimpleCursorAdapter adapter2 = new SimpleCursorAdapter(ListePartiesASignerActivity.this, R.layout.elementlistepartiesasigner, c, from, to, 0);
+
+
+
+                               String[] from = {"hashPartie", "joueur1", "joueur2", "dateDuMatch","arbitre"};
+
+                               int[] to = {R.id.textViewListePartieHash, R.id.textViewListePartieJoueur1, R.id.textViewListePartieJoueur2, R.id.textViewListePartieDate,R.id.textViewListePartieArbitre};
+                               SimpleCursorAdapter adapter2 = new SimpleCursorAdapter(ListePartiesASignerActivity.this, R.layout.listepartie, c, from, to, 0);
                                listViewListePartiesASigner.setAdapter(adapter2);
                                System.out.println(listViewListePartiesASigner.getCount());
                                System.out.println("PartieARecevoir - 667#2");
