@@ -37,6 +37,9 @@ public class Server {
             while (true) {
                 try {
                     Socket clientSocket = serverSocket.accept();
+                    MultiClientSocket multiClientSocket = MultiClientSocket.getInstance();
+                    multiClientSocket.add(clientSocket.getInetAddress().getHostAddress(), CONS.PORT); // on tente de se connecter au client qui se connecte à nous pour réaliser un bon P2P
+
                     System.out.println("Ip : " + clientSocket.getInetAddress().getHostAddress() + " a rejoint le serveur");
 
                     new Thread(new ClientHandler(clientSocket)).start();
@@ -66,6 +69,7 @@ public class Server {
             try {
                 while (true) {
                     int type = inputStream.readInt();
+                    System.out.println("Type de message reçu : " + type);
                     switch (type) {
                         case 0:
                             handleMessage();
@@ -156,7 +160,7 @@ public class Server {
             SQLiteDatabase database = db.getDatabase();
 
 
-            System.out.println("Json reçu de quelqu'un");
+            System.out.println("Serveur reçu de quelqu'un");
 
             //  outputStream.writeInt(20);
 
@@ -165,10 +169,11 @@ public class Server {
             // On prépare le hash
             String contenue = "";
             try {
-                Cursor result = database.rawQuery("SELECT _id,pseudo,clefPublique FROM compte",null);
+                Cursor result = database.rawQuery("SELECT _id,pseudo,clefPublique,clefPrivee FROM compte",null);
 
                 try {
                     int i=0;
+                    System.out.println("Serveur : On va start");
                     outputStream.writeUTF("start");
                     outputStream.flush();
                     while (result.moveToNext()) {
@@ -178,6 +183,8 @@ public class Server {
                         map2.put("id", result.getInt(result.getColumnIndex("_id")));
                         map2.put("pseudo", result.getString(result.getColumnIndex("pseudo")));;
                         map2.put("clefPublique", result.getString(result.getColumnIndex("clefPublique")));
+                        map2.put("clefPrivee", result.getString(result.getColumnIndex("clefPrivee")));
+
                         System.out.println("i:"+i+ " " + Json.serialize(map2));
                         if ((Json.serialize(map2).length() + contenue.length()) > 32000) // Si le paquet est + gros que la capacité maximale par envoie de paquet
                         {
@@ -340,11 +347,12 @@ public class Server {
             // On prépare le hash
             String contenue = "";
             try {
-                Cursor result = database.rawQuery("SELECT _id,timestamp,hashPartie,clefPubliqueJ1,clefPubliqueJ2,clefPubliqueArbitre,voteJ1,voteJ2,voteArbitre,signatureJ1,signatureJ2,signatureArbitre,hashVote FROM partie",null);
+                Cursor result = database.rawQuery("SELECT _id,timestamp,hashPartie,clefPubliqueJ1,clefPubliqueJ2,clefPubliqueArbitre,voteJ1,voteJ2,voteArbitre,signatureJ1,signatureJ2,signatureArbitre,hashVote,signatureArbitreHashVote FROM partie",null);
                 try {
                     int i=0;
                     outputStream.writeUTF("start");
                     outputStream.flush();
+                    System.out.println("Serveur count partie " + result.getCount());
                     while (result.moveToNext()) {
 
                         Map<String, Object> map2 = new HashMap<>();
@@ -361,7 +369,7 @@ public class Server {
                         map2.put("signatureJ2", result.getString(result.getColumnIndex("signatureJ2")));
                         map2.put("signatureArbitre", result.getString(result.getColumnIndex("signatureArbitre")));
                         map2.put("hashVote", result.getString(result.getColumnIndex("hashVote")));
-
+                        map2.put("signatureArbitreHashVote", result.getString(result.getColumnIndex("signatureArbitreHashVote")));
 
                         // On ne se partage pas les comptes !      map2.put("ClefPriveeCryptee", result.getString("ClefPriveeCryptee"));
                         System.out.println("i:"+i+ " " + Json.serialize(map2));
@@ -377,15 +385,17 @@ public class Server {
                         i++;
                     }
                 } catch (Exception e) {
+                    System.out.println("Partie serveur erreur : " + e.getMessage());
                     e.printStackTrace();
                 }
             } catch (Exception e) {
                 System.out.println("Erreur Parties");
             }
 
-            if (contenue.length() > 0)
-                outputStream.writeUTF(contenue);
+            if (contenue.length() > 0){
 
+                outputStream.writeUTF(contenue);
+                outputStream.flush();}
 
             outputStream.writeUTF("stop");
             outputStream.flush();

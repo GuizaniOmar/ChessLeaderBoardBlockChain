@@ -46,6 +46,8 @@ ListView listViewPartie;
             @Override
             public void onClick(View view) {
                 String contenueFiltreSql = "";
+                 ThreadClient.updateLeaderboard(maBaseDeDonnees);
+
 
                 if (checkBoxFiltrePseudoPartie.isChecked()) {
                     String filtrePseudo = editTextFiltrePseudoPartie.getText().toString();

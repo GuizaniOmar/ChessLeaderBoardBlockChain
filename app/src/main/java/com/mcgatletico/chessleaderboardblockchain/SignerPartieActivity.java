@@ -64,15 +64,17 @@ String[] Couleurs = {"#A6EB8F","#E6AF2E","#632B2F"};
         String clefPrivee = intent.getStringExtra("ClefPrivee");
         String clefPublique = intent.getStringExtra("ClefPublique");
         String serveur = intent.getStringExtra("serveur");
-        DatabaseHelper maBaseDeDonnees = DatabaseHelper.getInstance(SignerPartieActivity.this);
+        DatabaseHelper maBaseDeDonnees = MultiClientSocket.db;
         SQLiteDatabase database = maBaseDeDonnees.getDatabase();
         try{
             new Handler().postDelayed(new Runnable() {
                 @SuppressLint("Range")
                 @Override
                 public void run() {
+                //    String supprimerPartieARecevoir = "DELETE FROM partieARecevoir WHERE hashPartie IN (SELECT hashPartie FROM partie)";
+                  //  database.execSQL(supprimerPartieARecevoir); On laisse les parties pour visualiser (après sera supprimé)
                    // String contenueFiltreSql = "WHERE ClefPubliqueJ1 = '" + clefPublique + "' OR ClefPubliqueJ2 = '" + clefPublique + "' OR lefPubliqueArbitre = '" + clefPublique + "'";
-                    String contenueFiltreSql = "WHERE hashPartie = '" + hashPartie + "'";
+                    String contenueFiltreSql = "WHERE hashPartie = '" + hashPartie + "' AND partieARecevoir.hashPartie NOT IN (SELECT hashPartie FROM partie)";
 
                     //Cursor c = database.rawQuery("SELECT * FROM PARTIES" + contenueFiltreSql,null);
                     Cursor c = database.rawQuery("SELECT partieARecevoir._id,partieARecevoir.clefPubliqueJ1,partieARecevoir.clefPubliqueJ2,partieARecevoir.clefPubliqueArbitre, partieARecevoir.voteJ1,partieARecevoir.voteJ2,partieARecevoir.voteArbitre,partieARecevoir.signatureJ1,partieARecevoir.signatureJ2,partieARecevoir.signatureArbitre,partieARecevoir.timestamp, strftime('%d-%m-%Y %H:%M', datetime(partieARecevoir.timestamp/1000, 'unixepoch')) as dateDuMatch, partieARecevoir.hashPartie, \n" +

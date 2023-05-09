@@ -9,4 +9,7 @@ public class CONS {
     public static double punirArbitre = -0.10;
     public static double recompenserArbitre = 0.01; // on ajoute 1% à chaque confirmation
 
+    public static int PORT = 52000;
+
+    public static String IP_Serveur = "93.115.97.128";
 }

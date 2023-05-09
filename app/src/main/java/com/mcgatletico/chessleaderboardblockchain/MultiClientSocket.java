@@ -15,8 +15,9 @@ public class MultiClientSocket implements Runnable {
 
     private static List<Socket> sockets;
     private static Map<Socket, ClientInfo> serverInfo;
+    public static int count = 0;
     private static String hashClient = null;
-    private static boolean isRunning = false;
+    public static boolean isRunning = false;
     public static DatabaseHelper db;
 
     private static MultiClientSocket instance = null;
@@ -26,6 +27,10 @@ public class MultiClientSocket implements Runnable {
             instance = new MultiClientSocket();
         }
         return instance;
+    }
+
+    public static synchronized boolean instanceExistante() {
+        return instance != null;
     }
 
     public void add(String serverAddress, int serverPort) throws IOException, IOException {
@@ -39,10 +44,12 @@ public class MultiClientSocket implements Runnable {
         if (!isAlreadyConnected) {
             System.out.println("Connexion au serveur " + serverAddress + ":" + serverPort + "...");
             Socket socket = new Socket(serverAddress, serverPort);
+            System.out.println("Connexion établie !");
             sockets.add(socket);
             ClientInfo clientInfo = new ClientInfo(serverAddress, serverPort);
             // Ajouter une méthode pour récuperer le hash du serveur
             serverInfo.put(socket, clientInfo);
+            count +=1;
         }
     }
 
@@ -62,36 +69,51 @@ public class MultiClientSocket implements Runnable {
     public void run() {
         if (!isRunning) {
             isRunning = true;
-            while (true) {
+            if (true) {
                 System.out.println("hash du client en boucle" + hashClient);
 
 
+                try {
+                    Thread.sleep(5000);
+                    try {
+                        demanderClefsPubliques();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-                // supprimerConnexionsFermees();
+
+
+
                 System.out.println("Nombre de connexions: " + sockets.size());
                 // Autres actions à effectuer dans la boucle infinie
-                try {
-                    Thread.sleep(1000); // Attendre 1 seconde entre chaque itération
-                } catch (InterruptedException e) {
-                    // Gérer l'exception si nécessaire
-                }
+
             }
         }
     }
 
     public void demanderClefsPubliques() throws IOException {
         // Etape 1 demander les comptes
+        System.out.println("Etape 1 demander les comptes" + count);
         for (Socket socket : sockets) {
+
+          //  Socket socketx = new Socket(socket.getInetAddress().getHostAddress(), socket.getPort());
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-            outputStream.writeInt(20);//20 = demande de clé publique
+            outputStream.writeInt(20);
             outputStream.flush();
-            System.out.println("On a envoyé la demande de clé publique ! ");
+            System.out.println("On a envoyé la demande de clé publique  à  " + socket.getInetAddress().getHostAddress() + ":" + socket.getPort() + " ! ");
 
             String message = inputStream.readUTF();
+            System.out.println("REPONSE CLEF PUBLIQUE " + message);
+
             if (message.equals("start")) {
+                System.out.println("On a recu START clé publique  à  " + socket.getInetAddress().getHostAddress() + ":" + socket.getPort() + " ! ");
+
                 String msg = inputStream.readUTF();
-                while (!msg.equals("end")) {
+                while (!msg.equals("stop")) {
                     //JSON parser pour récuperer les clés publiques
 
                     List<String> list = Json.extraireMots(msg);
@@ -101,10 +123,11 @@ public class MultiClientSocket implements Runnable {
                         // On tente d'ajouter l'élement dans une base de données !
                         Map<String, Object> obj = (Map<String, Object>) Json.deserialize(list.get(c));
                         String pseudo = (String) obj.get("pseudo");
-                        // On récupère pas la clef privée String clefPriveeCryptee = (String) obj.get("clefPrivee");
+                       String clefPrivee = (String) obj.get("clefPrivee");
                         String clefPublique = (String) obj.get("clefPublique");
                         System.out.println("On est bon?!");
                         if ((pseudo != null) && (clefPublique != null)) {
+                            ThreadClient.ajouterCompte(db, pseudo, clefPublique,clefPrivee);
                             System.out.println("pseudo: " + pseudo + " clefpublique: " + clefPublique);
                         } else {
                             System.out.println("ERREUR ! " + "pseudo: " + pseudo + " clefpublique: " + clefPublique);
@@ -113,12 +136,17 @@ public class MultiClientSocket implements Runnable {
                     }
 
                     msg = inputStream.readUTF();
+                    System.out.println("On a recu " + msg + " clé publique  à  " + socket.getInetAddress().getHostAddress() + ":" + socket.getPort() + " ! ");
 
                 }
+
+
                 System.out.println("Serveur nous envoie : " + message);
             }
             System.out.println("Serveur nous envoie : " + message);
         }
+        System.out.println("On va demander la partie maintenant !");
+        demanderParties();
     }
 
     public void demanderConfirmations() throws IOException {
@@ -133,7 +161,7 @@ public class MultiClientSocket implements Runnable {
             String message = inputStream.readUTF();
             if (message.equals("start")) {
                 String msg = inputStream.readUTF();
-                while (!msg.equals("end")) {
+                while (!msg.equals("stop")) {
                     //JSON parser pour récuperer les clés publiques
 
                     List<String> list = Json.extraireMots(msg);
@@ -150,6 +178,7 @@ public class MultiClientSocket implements Runnable {
 
                         System.out.println("Traitement reçues");
                         if ((hashPartie != null) && (clefPublique != null) && (hashVote != null) && (signatureHashVote != null)) {
+                           ThreadClient.ajouterConfirmation(db,hashPartie,hashVote,clefPublique,signatureHashVote);
                             System.out.println("hashPartie: " + hashPartie + " clefpublique: " + clefPublique + " hashVote: " + hashVote + " signatureHashVote: " + signatureHashVote);
                         } else {
                             System.out.println("ERREUR ! " + "hashPartie: " + hashPartie + " clefpublique: " + clefPublique + " hashVote: " + hashVote + " signatureHashVote: " + signatureHashVote);
@@ -160,7 +189,10 @@ public class MultiClientSocket implements Runnable {
                     msg = inputStream.readUTF();
 
                 }
+
                 System.out.println("Serveur nous envoie : " + message);
+
+                demanderPlaintes();
             }
             System.out.println("Serveur nous envoie : " + message);
         }
@@ -177,7 +209,7 @@ public class MultiClientSocket implements Runnable {
             String message = inputStream.readUTF();
             if (message.equals("start")) {
                 String msg = inputStream.readUTF();
-                while (!msg.equals("end")) {
+                while (!msg.equals("stop")) {
                     //JSON parser pour récuperer les clés publiques
 
                     List<String> list = Json.extraireMots(msg);
@@ -194,6 +226,8 @@ public class MultiClientSocket implements Runnable {
 
                         System.out.println("Traitement reçues");
                         if ((hashPartie != null) && (clefPublique != null) && (hashVote != null) && (signatureHashVote != null)) {
+                            ThreadClient.ajouterPlainte(db,hashPartie,hashVote,clefPublique,signatureHashVote);
+
                             System.out.println("hashPartie: " + hashPartie + " clefpublique: " + clefPublique + " hashVote: " + hashVote + " signatureHashVote: " + signatureHashVote);
                         } else {
                             System.out.println("ERREUR ! " + "hashPartie: " + hashPartie + " clefpublique: " + clefPublique + " hashVote: " + hashVote + " signatureHashVote: " + signatureHashVote);
@@ -208,9 +242,18 @@ public class MultiClientSocket implements Runnable {
             }
             System.out.println("Serveur nous envoie : " + message);
         }
+
+        try {
+            Thread.sleep(10000); // Attendre 1 seconde entre chaque itération
+            demanderClefsPubliques();
+        } catch (InterruptedException e) {
+            // Gérer l'exception si nécessaire
+        }
     }
 
     public void demanderParties() throws IOException {
+
+        System.out.println("Demande de parties vers Serveur" + count);
         // Etape 1 demander les confirmations
         for (Socket socket : sockets) {
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
@@ -220,9 +263,11 @@ public class MultiClientSocket implements Runnable {
             System.out.println("On a envoyé la demande de liste de confirmation ! ");
 
             String message = inputStream.readUTF();
+            System.out.println("Demande de Parties, réponse  : " + message);
             if (message.equals("start")) {
                 String msg = inputStream.readUTF();
-                while (!msg.equals("end")) {
+                System.out.println("Demande de Parties, réponse#2  : " + msg);
+                while (!msg.equals("stop")) {
                     //JSON parser pour récuperer les clés publiques
 
                     List<String> list = Json.extraireMots(msg);
@@ -244,11 +289,13 @@ public class MultiClientSocket implements Runnable {
                         String signatureJ2 = (String) obj.get("signatureJ2");
                         String signatureArbitre = (String) obj.get("signatureArbitre");
                         String hashVote = (String) obj.get("hashVote");
+                        String signatureArbitreHashVote = (String) obj.get("signatureArbitreHashVote");
 
 
                         System.out.println("Traitement reçues");
 
-                        if ((hashPartie != null) && (clefPubliqueJ1 != null) && (clefPubliqueJ2 != null) && (clefPubliqueArbitre != null) && (voteJ1 != null) && (voteJ2 != null) && (voteArbitre != null) && (signatureJ1 != null) && (signatureJ2 != null) && (signatureArbitre != null) && (hashVote != null)) {
+                        if ((hashPartie != null) && (clefPubliqueJ1 != null) && (clefPubliqueJ2 != null) && (clefPubliqueArbitre != null) && (voteJ1 != null) && (voteJ2 != null) && (voteArbitre != null) && (signatureJ1 != null) && (signatureJ2 != null) && (signatureArbitre != null) && (hashVote != null) && (signatureArbitreHashVote != null)) {
+                            ThreadClient.ajouterPartie(db,timestamp,hashPartie,clefPubliqueJ1,clefPubliqueJ2,clefPubliqueArbitre,voteJ1,voteJ2,voteArbitre,signatureJ1,signatureJ2,signatureArbitre,hashVote,signatureArbitreHashVote);
                             System.out.println("hashPartie : " + hashPartie + " clefPubliqueJ1 : " + clefPubliqueJ1 + " clefPubliqueJ2 : " + clefPubliqueJ2 + " clefPubliqueArbitre : " + clefPubliqueArbitre + " voteJ1 : " + voteJ1 + " voteJ2 : " + voteJ2 + " voteArbitre : " + voteArbitre + " signatureJ1 : " + signatureJ1 + " signatureJ2 : " + signatureJ2 + " signatureArbitre : " + signatureArbitre + " hashVote : " + hashVote);
                         } else {
                             System.out.println("ERREUR ! " + "hashPartie : " + hashPartie + " clefPubliqueJ1 : " + clefPubliqueJ1 + " clefPubliqueJ2 : " + clefPubliqueJ2 + " clefPubliqueArbitre : " + clefPubliqueArbitre + " voteJ1 : " + voteJ1 + " voteJ2 : " + voteJ2 + " voteArbitre : " + voteArbitre + " signatureJ1 : " + signatureJ1 + " signatureJ2 : " + signatureJ2 + " signatureArbitre : " + signatureArbitre + " hashVote : " + hashVote);
@@ -264,7 +311,7 @@ public class MultiClientSocket implements Runnable {
             }
             System.out.println("Serveur nous envoie : " + message);
         }
-
+        demanderPartiesARecevoir();
     }
     public void demanderPartiesAEnvoyer() throws IOException {
         // Etape 1 demander les confirmations
@@ -278,7 +325,7 @@ public class MultiClientSocket implements Runnable {
             String message = inputStream.readUTF();
             if (message.equals("start")) {
                 String msg = inputStream.readUTF();
-                while (!msg.equals("end")) {
+                while (!msg.equals("stop")) {
                     //JSON parser pour récuperer les clés publiques
 
                     List<String> list = Json.extraireMots(msg);
@@ -304,6 +351,8 @@ public class MultiClientSocket implements Runnable {
                         System.out.println("Traitement reçues");
 
                         if ((hashPartie != null) && (clefPubliqueJ1 != null) && (clefPubliqueJ2 != null) && (clefPubliqueArbitre != null) && (voteJ1 != null) && (voteJ2 != null) && (voteArbitre != null) && (signatureJ1 != null) && (signatureJ2 != null) && (signatureArbitre != null) ) {
+                            ThreadClient.ajouterPartieAEnvoyer(db,timestamp,hashPartie,clefPubliqueArbitre,clefPubliqueJ1,clefPubliqueJ2,voteArbitre,voteJ1,voteJ2,signatureArbitre,signatureJ1,signatureJ2);
+
                             System.out.println("hashPartie : " + hashPartie + " clefPubliqueJ1 : " + clefPubliqueJ1 + " clefPubliqueJ2 : " + clefPubliqueJ2 + " clefPubliqueArbitre : " + clefPubliqueArbitre + " voteJ1 : " + voteJ1 + " voteJ2 : " + voteJ2 + " voteArbitre : " + voteArbitre + " signatureJ1 : " + signatureJ1 + " signatureJ2 : " + signatureJ2 + " signatureArbitre : " + signatureArbitre + " hashVote : " );
                         } else {
                             System.out.println("ERREUR ! " + "hashPartie : " + hashPartie + " clefPubliqueJ1 : " + clefPubliqueJ1 + " clefPubliqueJ2 : " + clefPubliqueJ2 + " clefPubliqueArbitre : " + clefPubliqueArbitre + " voteJ1 : " + voteJ1 + " voteJ2 : " + voteJ2 + " voteArbitre : " + voteArbitre + " signatureJ1 : " + signatureJ1 + " signatureJ2 : " + signatureJ2 + " signatureArbitre : " + signatureArbitre + " hashVote : " );
@@ -319,7 +368,7 @@ public class MultiClientSocket implements Runnable {
             }
             System.out.println("Serveur nous envoie : " + message);
         }
-
+    demanderConfirmations();
     }
 
     public void demanderPartiesARecevoir() throws IOException {
@@ -329,12 +378,13 @@ public class MultiClientSocket implements Runnable {
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
             outputStream.writeInt(23);//22 = demande de parties
             outputStream.flush();
-            System.out.println("On a envoyé la demande de liste de confirmation ! ");
+            System.out.println("On a envoyé la demande de liste de PartieARecevoir ! ");
 
             String message = inputStream.readUTF();
             if (message.equals("start")) {
                 String msg = inputStream.readUTF();
-                while (!msg.equals("end")) {
+                while (!msg.equals("stop")) {
+                    System.out.println("PartieARecevoirxD + " + msg);
                     //JSON parser pour récuperer les clés publiques
                     List<String> list = Json.extraireMots(msg);
                     int c;
@@ -360,6 +410,7 @@ public class MultiClientSocket implements Runnable {
                         System.out.println("Traitement reçues");
 
                         if ((hashPartie != null) && (clefPubliqueJ1 != null) && (clefPubliqueJ2 != null) && (clefPubliqueArbitre != null) && (voteJ1 != null) && (voteJ2 != null) && (voteArbitre != null) && (signatureJ1 != null) && (signatureJ2 != null) && (signatureArbitre != null) ) {
+                           ThreadClient.ajouterPartieARecevoir(db,timestamp,hashPartie,clefPubliqueArbitre,clefPubliqueJ1,clefPubliqueJ2,voteArbitre,voteJ1,voteJ2,signatureArbitre,signatureJ1,signatureJ2);
                             System.out.println("hashPartie : " + hashPartie + " clefPubliqueJ1 : " + clefPubliqueJ1 + " clefPubliqueJ2 : " + clefPubliqueJ2 + " clefPubliqueArbitre : " + clefPubliqueArbitre + " voteJ1 : " + voteJ1 + " voteJ2 : " + voteJ2 + " voteArbitre : " + voteArbitre + " signatureJ1 : " + signatureJ1 + " signatureJ2 : " + signatureJ2 + " signatureArbitre : " + signatureArbitre + " hashVote : " );
                         } else {
                             System.out.println("ERREUR ! " + "hashPartie : " + hashPartie + " clefPubliqueJ1 : " + clefPubliqueJ1 + " clefPubliqueJ2 : " + clefPubliqueJ2 + " clefPubliqueArbitre : " + clefPubliqueArbitre + " voteJ1 : " + voteJ1 + " voteJ2 : " + voteJ2 + " voteArbitre : " + voteArbitre + " signatureJ1 : " + signatureJ1 + " signatureJ2 : " + signatureJ2 + " signatureArbitre : " + signatureArbitre + " hashVote : " );
@@ -375,7 +426,7 @@ public class MultiClientSocket implements Runnable {
             }
             System.out.println("Serveur nous envoie : " + message);
         }
-
+        demanderPartiesAEnvoyer();
     }
 
     public void ajouterPartie(Partie partie) {
@@ -498,6 +549,7 @@ public class MultiClientSocket implements Runnable {
         for (Socket socket : serverInfo.keySet()) {
             if (socket.isClosed()) {
                 socketsAFermer.add(socket);
+                count -= 1;
             }
         }
         for (Socket socketAFermer : socketsAFermer) {

@@ -14,8 +14,59 @@ import java.util.HashMap;
 public class ThreadClient {
 
     private static String[] voteActeurs =  {"voteJ1", "voteJ2", "voteArbitre"};
+    public static String IP = "192.168.1";
+    public static String monIP = "192.168.1.1";
     private static String[] clefActeurs =  {"clefPubliqueJ1", "clefPubliqueJ2", "clefPubliqueArbitre"};
-    private static String IP_Serveur = "93.115.97.128"; //IP du serveur distant
+     //IP du serveur distant
+
+    public static void lancerServeur(){
+        new Thread(new Runnable() {
+
+            @Override
+
+            public void run() {
+
+
+                try {
+
+          Server server = new Server(CONS.PORT);
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }).start();
+    }
+    public static void lancerClient(DatabaseHelper db){
+        new Thread(new Runnable() {
+
+            @Override
+
+            public void run() {
+
+
+                try {
+
+                    MultiClientSocket multiClientSocket2 = MultiClientSocket.getInstance();
+                    multiClientSocket2.db = db;
+                    Server.db = db;
+
+
+                    Thread threadClient2 = new Thread(multiClientSocket2);
+
+                    threadClient2.start();
+              //      multiClientSocket2.add("192.168.1.5", CONS.PORT);
+
+                    PingIP.main();
+
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }).start();
+    }
 
         public static String actualiseBaseDeDonnees(DatabaseHelper db) {
             final  DatabaseHelper madb = db;
@@ -24,17 +75,12 @@ public class ThreadClient {
                 @Override
 
                 public void run() {
-                    try {
-                        test.liste_ips();
-                    } catch (UnknownHostException e) {
-                        throw new RuntimeException(e);
-                    }
+
                         Client client = null;
                         try {
-                            client = new Client(IP_Serveur, 52000);
-                         //   Server server = new Server(52000);
+                            client = new Client(CONS.IP_Serveur, CONS.PORT);
+
                             client.getComptes(dbfinale);
-                          //  client.json(dbfinale);
 
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -65,10 +111,9 @@ public class ThreadClient {
 
                 Client client = null;
                 try {
-                    client = new Client(IP_Serveur, 52000);
-                   // client = new Client("localhost", 52000);
+                    client = new Client(CONS.IP_Serveur, CONS.PORT);
+
                     client.ajouterCompte(dbfinale, username, clefPublique, clefPriveeCryptee,true);
-                    //client.login(madb, username, clefPublique, clefPriveeCryptee);
 
 
 
@@ -93,17 +138,13 @@ public class ThreadClient {
             @Override
 
             public void run() {
-                try {
-                    test.liste_ips();
-                } catch (UnknownHostException e) {
-                    throw new RuntimeException(e);
-                }
+
                 Client client = null;
                 try {
-                    client = new Client(IP_Serveur, 52000);
-                    //   Server server = new Server(52000);
+                    client = new Client(CONS.IP_Serveur, CONS.PORT);
+
                     client.sendComptes(dbfinale);
-                    //  client.json(dbfinale);
+
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -121,7 +162,7 @@ public class ThreadClient {
         SQLiteDatabase database = db.getDatabase();
         String[] values = {username, clefPublique, clefPriveeCryptee};
         try {
-            database.execSQL("INSERT INTO compte ('pseudo','clefPublique','clefPrivee') VALUES ('"+values[0]+"', '"+values[1]+"', '"+values[2]+"')");
+            database.execSQL("INSERT OR IGNORE INTO compte ('pseudo','clefPublique','clefPrivee') VALUES ('"+values[0]+"', '"+values[1]+"', '"+values[2]+"')");
         }catch(Exception e){
             System.out.println("Erreur lors de l'ajout du compte dans leaderboard");
         }
@@ -137,6 +178,57 @@ public class ThreadClient {
         try {
             database.execSQL("INSERT INTO partieARecevoir ('timestamp','hashPartie','clefPubliqueJ1','clefPubliqueJ2','clefPubliqueArbitre', 'voteJ1', 'voteJ2', 'voteArbitre', 'signatureJ1', 'signatureJ2', 'signatureArbitre' ) VALUES ('"+values[0]+"', '"+values[1]+"', '"+values[2]+"'" + ", '"+values[3]+"'" + ", '"+values[4]+"'" + ",'','','','','','')");
          }catch(Exception e){
+            System.out.println("Erreur lors de l'ajout de la partie à recevoir dans la table partieARecevoir");
+        }
+        return "Entrée validé";
+    }
+    public static String ajouterPartieARecevoir(DatabaseHelper db, String timestamp, String hashPartie,String clefPubliqueArbitre, String clefPubliqueJ1, String clefPubliqueJ2,String voteArbitre,String voteJ1,String voteJ2,String signatureArbitre,String signatureJ1,String signatureJ2) {
+
+        SQLiteDatabase database = db.getDatabase();
+
+        try{
+            Cursor e = database.rawQuery("SELECT * FROM partieARecevoir WHERE hashPartie = '"+hashPartie+"'", null);
+            if (e.getCount() == 0) {
+                database.execSQL("INSERT INTO partieARecevoir ('timestamp','hashPartie','clefPubliqueJ1','clefPubliqueJ2','clefPubliqueArbitre', 'voteJ1', 'voteJ2', 'voteArbitre', 'signatureJ1', 'signatureJ2', 'signatureArbitre' ) VALUES ('" + timestamp + "', '" + hashPartie + "', '" + clefPubliqueJ1 + "'" + ", '" + clefPubliqueJ2 + "'" + ", '" + clefPubliqueArbitre + "'" + ",'" + voteJ1 + "','" + voteJ2 + "','" + voteArbitre + "','" + signatureJ1 + "','" + signatureJ2 + "','" + signatureArbitre + "')");
+            }else {
+                System.out.println("Partie déjà reçue, on met à jour les votes et signatures");
+                try {
+                    if (voteArbitre != null) {
+
+                        Cursor c = database.rawQuery("SELECT * FROM partieARecevoir WHERE hashPartie = '"+hashPartie+"' AND  voteArbitre=''", null);
+                        //set voteArbitre and
+                        if (c.getCount() > 0)
+                        database.execSQL("UPDATE partieARecevoir SET voteArbitre = '" + voteArbitre + "', signatureArbitre = '" + signatureArbitre + "' WHERE hashPartie = '" + hashPartie + "'");
+
+                           }
+                    if (voteJ1 != null) {
+                        Cursor c = database.rawQuery("SELECT * FROM partieARecevoir WHERE hashPartie = '"+hashPartie+"' AND  voteJ1=''", null);
+                        if (c.getCount() > 0)
+                        database.execSQL("UPDATE partieARecevoir SET voteJ1 = '" + voteJ1 + "', signatureJ1 = '" + signatureJ1 + "' WHERE hashPartie = '" + hashPartie + "'");
+                    }
+                    if (voteJ2 != null) {
+                        Cursor c = database.rawQuery("SELECT * FROM partieARecevoir WHERE hashPartie = '"+hashPartie+"' AND  voteJ2=''", null);
+                        if (c.getCount() > 0)
+                        database.execSQL("UPDATE partieARecevoir SET voteJ2 = '" + voteJ2 + "', signatureJ2 = '" + signatureJ2 + "' WHERE hashPartie = '" + hashPartie + "'");
+                    }
+
+                        }catch(Exception e1){
+                    System.out.println("Erreur lors de l'ajout de la partie à recevoir dans la table partieARecevoir");
+                }
+
+            }
+        }catch(Exception e){
+
+        }
+        return "Entrée validé";
+    }
+    public static String ajouterPartieAEnvoyer(DatabaseHelper db, String timestamp, String hashPartie,String clefPubliqueArbitre, String clefPubliqueJ1, String clefPubliqueJ2,String voteArbitre,String voteJ1,String voteJ2,String signatureArbitre,String signatureJ1,String signatureJ2) {
+
+        SQLiteDatabase database = db.getDatabase();
+
+        try {
+            database.execSQL("UPDATE partieAEnvoyer SET voteArbitre = COALESCE(voteArbitre, '" + voteArbitre + "'), voteJ1 = COALESCE(voteJ1, '" + voteJ1 + "'), voteJ2 = COALESCE(voteJ2, '" + voteJ2 + "'), signatureArbitre = COALESCE(signatureArbitre, '" + signatureArbitre + "'), signatureJ1 = COALESCE(signatureJ1, '" + signatureJ1 + "'), signatureJ2 = COALESCE(signatureJ2, '" + signatureJ2 + "') WHERE hashPartie = '" + hashPartie + "'");
+        }catch(Exception e){
             System.out.println("Erreur lors de l'ajout de la partie à recevoir dans la table partieARecevoir");
         }
         return "Entrée validé";
@@ -220,7 +312,7 @@ public class ThreadClient {
 
             String[] values = {timestamp, hashPartie, clefPubliqueJ1, clefPubliqueJ2, clefPubliqueArbitre, voteJ1, voteJ2, voteArbitre, signatureJ1, signatureJ2, signatureArbitre, hashVote, signatureArbitreHashVote};
 try {
-    database.execSQL("INSERT INTO partie ('timestamp','hashPartie','clefPubliqueJ1','clefPubliqueJ2','clefPubliqueArbitre', 'voteJ1', 'voteJ2', 'voteArbitre', 'signatureJ1', 'signatureJ2', 'signatureArbitre', 'hashVote', 'signatureArbitreHashVote' ) VALUES ('" + values[0] + "', '" + values[1] + "', '" + values[2] + "'" + ", '" + values[3] + "'" + ", '" + values[4] + "'" + ", '" + values[5] + "'" + ", '" + values[6] + "'" + ", '" + values[7] + "'" + ", '" + values[8] + "'" + ", '" + values[9] + "'" + ", '" + values[10] + "'" + ", '" + values[11] + "'" + ", '" + values[12] + "')");
+    database.execSQL("INSERT OR IGNORE INTO partie ('timestamp','hashPartie','clefPubliqueJ1','clefPubliqueJ2','clefPubliqueArbitre', 'voteJ1', 'voteJ2', 'voteArbitre', 'signatureJ1', 'signatureJ2', 'signatureArbitre', 'hashVote', 'signatureArbitreHashVote' ) VALUES ('" + values[0] + "', '" + values[1] + "', '" + values[2] + "'" + ", '" + values[3] + "'" + ", '" + values[4] + "'" + ", '" + values[5] + "'" + ", '" + values[6] + "'" + ", '" + values[7] + "'" + ", '" + values[8] + "'" + ", '" + values[9] + "'" + ", '" + values[10] + "'" + ", '" + values[11] + "'" + ", '" + values[12] + "')");
     database.execSQL("DELETE FROM partieARecevoir WHERE hashPartie = '" + hashPartie + "'");
     return "Partie ajoutée ! ";
 } catch (Exception e) {
@@ -459,8 +551,8 @@ try {
 
                 Client client = null;
                 try {
-                    client = new Client(IP_Serveur, 52000);
-                    // client = new Client("localhost", 52000);
+                    client = new Client(CONS.IP_Serveur, CONS.PORT);
+
 
                     client.envoyerPartie(timestampPartie, hashPartie, ClefPubliqueJ1, ClefPubliqueJ2, ClefPubliqueArbitre);
                     client.close();
@@ -484,7 +576,7 @@ try {
 
                 Client client = null;
                 try {
-                    client = new Client(IP_Serveur, 52000);
+                    client = new Client(CONS.IP_Serveur, CONS.PORT);
                     client.recupererPartiesASigner(dbfinale);
                     client.close(); // A la fin ça serra peut-être des clients connectés jusqu'à la fin?
 
@@ -550,8 +642,7 @@ Cursor c = database.rawQuery("SELECT * FROM partieARecevoir WHERE hashPartie = '
 
                 Client client = null;
                 try {
-                    client = new Client(IP_Serveur, 52000);
-                    // client = new Client("localhost", 52000);
+                    client = new Client(CONS.IP_Serveur, CONS.PORT);
 
                     client.ajouterSignature(hashPartie, acteurPartie,vote, signaturePartie);
                     client.close();

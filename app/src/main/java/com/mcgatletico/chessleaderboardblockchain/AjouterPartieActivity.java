@@ -122,7 +122,7 @@ TextView editTextJoueur1;
 
                        }
                         Toast.makeText(AjouterPartieActivity.this, "Partie ajoutée" + (Objects.equals(finalServeur, "true") ?"Au serveur VPS":"En local, les demandes aux autres participants seront envoyés!  "), Toast.LENGTH_LONG).show();
-
+                        btnRetourAjouterPartie.performClick();
                     } catch (Exception e) {
                         Toast.makeText(AjouterPartieActivity.this, "Erreur lors de l'ajout de la partie - Base de données inaccessible", Toast.LENGTH_SHORT).show();
                     }

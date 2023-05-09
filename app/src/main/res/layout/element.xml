@@ -31,16 +31,6 @@
             android:visibility="visible" />
 
         <TextView
-            android:id="@+id/affichageClefPublique2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ellipsize="end"
-            android:ems="5"
-            android:text="TextView"
-            android:textSize="8sp"
-            android:visibility="visible" />
-
-        <TextView
             android:id="@+id/affichageClefPrivee"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
